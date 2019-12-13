@@ -8,6 +8,7 @@ DB_NAME = "rizzmi_crm"
 DB_PORT = 27017
 DB_HOST = "localhost"
 
+
 class ExtendedDocument(db.Document):
     """
     ...
@@ -77,6 +78,7 @@ class ExtendedDocument(db.Document):
         except Exception as e:
             print(str(e))
             return []
+
 
 class ExtendedEmbeddedDocument(db.EmbeddedDocument):
     """
