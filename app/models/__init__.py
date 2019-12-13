@@ -83,7 +83,6 @@ class ExtendedDocument(db.Document):
 class ExtendedEmbeddedDocument(db.EmbeddedDocument):
     """
     ...
-    sdsdasda
     """
 
     meta = {"abstract": True}
