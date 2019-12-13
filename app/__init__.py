@@ -18,3 +18,7 @@ db.init_app(app)
 
 
 from flask_graphql import GraphQLView
+from api import schema
+
+app.add_url_rule('/api', view_func=GraphQLView.as_view('api', schema=schema, graphiql=True))
+

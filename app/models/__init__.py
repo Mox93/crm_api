@@ -2,6 +2,7 @@ from datetime import datetime
 from bson import ObjectId
 from flask_mongoengine import MongoEngine
 
+
 db = MongoEngine()
 
 DB_NAME = "rizzmi_crm"

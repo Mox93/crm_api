@@ -1,4 +1,4 @@
-from models import db, ExtendedDocument
+from . import db, ExtendedDocument
 
 
 class User(ExtendedDocument):
