@@ -1,4 +1,5 @@
 from graphene import Schema, ObjectType, List, Field, ID, String, Int, Boolean
+from .user import Signup, User as UserType
 from models.user import User as UserModel
 
 
@@ -24,5 +25,7 @@ class MutationType(ObjectType):
         name = "Mutation"
         description = "..."
 
+    signup = Signup.Field()
 
-schema = Schema(query=QueryType)  # , mutation=MutationType
+
+schema = Schema(query=QueryType, mutation=MutationType)
