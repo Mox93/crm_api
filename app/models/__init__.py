@@ -8,6 +8,7 @@ DB_NAME = "rizzmi_crm"
 DB_PORT = 27017
 DB_HOST = "localhost"
 
+
 class ExtendedDocument(db.Document):
     """
     ...
@@ -78,10 +79,10 @@ class ExtendedDocument(db.Document):
             print(str(e))
             return []
 
+
 class ExtendedEmbeddedDocument(db.EmbeddedDocument):
     """
     ...
-    sdsdasda
     """
 
     meta = {"abstract": True}
