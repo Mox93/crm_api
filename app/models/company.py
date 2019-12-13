@@ -12,7 +12,7 @@ class Company(ExtendedDocument):
     name = db.StringField(required=True, unique=True)
     email = db.EmailField(unique=True)
     phone_number = db.StringField(unique=True)
-    team = db.ListField(db.ReferenceField(User))
+    team = db.ListField(db.ReferenceField(User, reverse_delete_rule=4))
     roles = db.EmbeddedDocumentListField(EmbeddedRole)
 
     @classmethod

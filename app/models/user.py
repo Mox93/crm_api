@@ -1,3 +1,4 @@
+from .role import EmbeddedRole
 from . import db, ExtendedDocument
 
 
@@ -13,6 +14,8 @@ class User(ExtendedDocument):
     email = db.EmailField(required=True, unique=True)
     phone_number = db.StringField(required=True, unique=True)
     password = db.StringField(required=True)
+    company = db.ReferenceField('Company', reverse_delete_rule=3)
+    role = db.EmbeddedDocumentListField(EmbeddedRole)
 
     def clean(self):
 
@@ -32,6 +35,3 @@ class User(ExtendedDocument):
     @classmethod
     def find_by_phone_number(cls, phone_number):
         return cls.objects(phone_number=phone_number.lower()).first()
-
-
-
