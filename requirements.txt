@@ -1,0 +1,7 @@
+Flask
+Flask-GraphQL
+flask-mongoengine
+Flask-JWT-Extended
+graphene
+Werkzeug
+
