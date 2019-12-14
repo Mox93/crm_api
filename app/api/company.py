@@ -29,7 +29,7 @@ class StrictCompanyInput(InputObjectType):
     name = String(required=True)
     email = String()
     phone_number = String()
-    role = InputField(StrictRoleInput)
+    # roles = List(InputField(StrictRoleInput))
 
 
 class NewCompany(Mutation):
@@ -50,13 +50,16 @@ class NewCompany(Mutation):
         if name_check:
             return NewCompany(ok=False)
 
+        user = User.find_by_id(user_id)
+        if user.company:
+            return NewCompany(ok=False)
+
         owner_role = EmbeddedRole(name="owner", group=0, priority_level=0)
 
         company = CompanyModel(**company_data)
         company.roles.append(owner_role)
         company.save()
 
-        user = User.find_by_id(user_id)
         user.role.append(owner_role)
         user.company = company
         user.save()

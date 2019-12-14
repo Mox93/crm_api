@@ -25,6 +25,11 @@ class User(ObjectType):
         description = "..."
         interfaces = (UserInterface,)
 
+    @staticmethod
+    def resolve_company(root, info):
+        if root.company:
+            return str(root.company.id)
+
 
 class Login(ObjectType):
     class Meta:

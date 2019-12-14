@@ -10,8 +10,8 @@ class Company(ExtendedDocument):
             "allow_inheritance": True}
 
     name = db.StringField(required=True, unique=True)
-    email = db.EmailField(unique=True)
-    phone_number = db.StringField(unique=True)
+    email = db.EmailField(unique=True, sparse=True)
+    phone_number = db.StringField(unique=True, sparse=True)
     # team = db.ListField(db.ReferenceField(User, reverse_delete_rule=4), required=True)
     roles = db.EmbeddedDocumentListField(EmbeddedRole, required=True)
 

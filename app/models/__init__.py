@@ -18,13 +18,23 @@ class ExtendedDocument(db.Document):
     meta = {"abstract": True}
 
     _id = db.ObjectIdField(primary_key=True, required=True, default=ObjectId)
-    creation_date = db.DateTimeField()
-    modified_date = db.DateTimeField(default=datetime.utcnow)
+    creation_date = db.DateTimeField(required=True)
+    modified_date = db.DateTimeField(required=True, default=datetime.utcnow)
 
-    def clean(self, *args, **kwargs):
+    def save(self, *args, **kwargs):
         if not self.creation_date:
             self.creation_date = datetime.utcnow()
         self.modified_date = datetime.utcnow()
+
+        for key in self:
+            if isinstance(self[key], db.EmbeddedDocument):
+                self[key].save()
+            if isinstance(self[key], list):
+                for val in self[key]:
+                    if isinstance(val, db.EmbeddedDocument):
+                        val.save()
+
+        super(ExtendedDocument, self).save(*args, **kwargs)
 
     def json(self):
         result = self.to_mongo()
@@ -88,10 +98,10 @@ class ExtendedEmbeddedDocument(db.EmbeddedDocument):
     meta = {"abstract": True}
 
     _id = db.ObjectIdField(required=True, default=ObjectId)
-    creation_date = db.DateTimeField()
-    modified_date = db.DateTimeField(default=datetime.utcnow)
+    creation_date = db.DateTimeField(required=True)
+    modified_date = db.DateTimeField(required=True, default=datetime.utcnow)
 
-    def clean(self, *args, **kwargs):
+    def save(self):
         if not self.creation_date:
             self.creation_date = datetime.utcnow()
         self.modified_date = datetime.utcnow()
