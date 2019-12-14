@@ -1,4 +1,5 @@
 from .role import EmbeddedRole
+from .company import Company
 from . import db, ExtendedDocument
 
 
@@ -14,8 +15,9 @@ class User(ExtendedDocument):
     email = db.EmailField(required=True, unique=True)
     phone_number = db.StringField(required=True, unique=True)
     password = db.StringField(required=True)
-    company = db.ReferenceField('Company', reverse_delete_rule=3)
+    company = db.LazyReferenceField(Company, reverse_delete_rule=3)
     role = db.EmbeddedDocumentListField(EmbeddedRole)
+    answers_to = db.ReferenceField('self', reverse_delete_rule=3)
 
     def clean(self):
 
