@@ -21,11 +21,10 @@ class ExtendedDocument(db.Document):
     creation_date = db.DateTimeField()
     modified_date = db.DateTimeField(default=datetime.utcnow)
 
-    def save(self, *args, **kwargs):
+    def clean(self, *args, **kwargs):
         if not self.creation_date:
             self.creation_date = datetime.utcnow()
         self.modified_date = datetime.utcnow()
-        return super(ExtendedDocument, self).save(*args, **kwargs)
 
     def json(self):
         result = self.to_mongo()
@@ -91,6 +90,11 @@ class ExtendedEmbeddedDocument(db.EmbeddedDocument):
     _id = db.ObjectIdField(required=True, default=ObjectId)
     creation_date = db.DateTimeField()
     modified_date = db.DateTimeField(default=datetime.utcnow)
+
+    def clean(self, *args, **kwargs):
+        if not self.creation_date:
+            self.creation_date = datetime.utcnow()
+        self.modified_date = datetime.utcnow()
 
     def json(self):
         result = self.to_mongo()

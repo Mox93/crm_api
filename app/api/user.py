@@ -2,7 +2,8 @@ from models.user import User as UserModel
 from werkzeug.security import generate_password_hash
 from .utils import DBInterface
 from .auth import Token, create_tokens
-from graphene import ObjectType, Mutation, InputObjectType, String, Boolean, Field, ID, DateTime
+from .role import Role
+from graphene import ObjectType, Mutation, InputObjectType, String, Boolean, Field, ID, List
 
 
 class CommonAttributes(object):
@@ -10,6 +11,8 @@ class CommonAttributes(object):
     last_name = String()
     email = String()
     phone_number = String()
+    company = ID()
+    role = List(Role)
 
 
 class UserInterface(CommonAttributes, DBInterface):
@@ -57,7 +60,7 @@ class Signup(Mutation):
     token = Field(lambda: Token)
 
     @staticmethod
-    def mutate(root, info, user_data=None):
+    def mutate(root, info, user_data):
         email_check = UserModel.find_by_email(user_data.email)
         if email_check:
             return Signup(ok=False)

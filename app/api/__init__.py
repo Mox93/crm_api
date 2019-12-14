@@ -1,6 +1,8 @@
 from graphene import Schema, ObjectType, List, Field, ID, String, Int, Boolean
 from .user import Signup, Login
 from .auth import Token, create_tokens
+from .role import NewRole, Role
+from .company import NewCompany, Company
 from models.user import User as UserModel
 from werkzeug.security import check_password_hash
 
@@ -27,6 +29,8 @@ class MutationType(ObjectType):
         description = "..."
 
     signup = Signup.Field()
+    new_role = NewRole.Field()
+    new_company = NewCompany.Field()
 
 
 schema = Schema(query=QueryType, mutation=MutationType)

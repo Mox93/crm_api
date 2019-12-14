@@ -13,7 +13,7 @@ class Company(ExtendedDocument):
     email = db.EmailField(unique=True)
     phone_number = db.StringField(unique=True)
     # team = db.ListField(db.ReferenceField(User, reverse_delete_rule=4), required=True)
-    roles = db.EmbeddedDocumentListField(EmbeddedRole)
+    roles = db.EmbeddedDocumentListField(EmbeddedRole, required=True)
 
     @classmethod
     def find_by_name(cls, name):
