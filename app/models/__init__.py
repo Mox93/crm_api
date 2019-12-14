@@ -123,3 +123,18 @@ class ExtendedEmbeddedDocument(db.EmbeddedDocument):
 
         return result
 
+
+DTYPES = {"bool": db.BooleanField,
+          "datetime": db.DateTimeField,
+          "dict": db.DictField,
+          "dynamic": db.DynamicField,
+          "email": db.EmailField,
+          "float": db.FloatField,
+          "int": db.IntField,
+          "list": db.ListField,
+          "str": db.StringField}
+
+ACCEPT_MAX_LEN = ["str", "list", "email"]
+ACCEPT_MIN_LEN = ["str", "email"]
+ACCEPT_MIN_VAL = ["int", "float"]
+ACCEPT_MAX_VAL = ["int", "float"]
