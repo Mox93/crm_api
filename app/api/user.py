@@ -23,6 +23,15 @@ class User(ObjectType):
         interfaces = (UserInterface,)
 
 
+class Login(ObjectType):
+    class Meta:
+        name = "Login"
+        description = "..."
+
+    user = Field(User)
+    token = Field(Token)
+
+
 class StrictUserInput(InputObjectType):
     first_name = String(required=True)
     last_name = String(required=True)
@@ -61,5 +70,5 @@ class Signup(Mutation):
         user.password = generate_password_hash(user_data.password, method="sha256")
 
         user.save()
-        return Signup(ok=True, user=user, auth=create_tokens(user))
+        return Signup(ok=True, user=user, token=create_tokens(user))
 
