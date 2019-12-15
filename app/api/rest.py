@@ -13,7 +13,7 @@ def login():
     data = request.get_json()
     user = User.find_by_email(data['email'])
     if user and check_password_hash(user.password, data["password"]):
-        return jsonify({"login": True})
+        return jsonify({"login": True, "user": user.json()})
     return jsonify({"login": False})
 
 
@@ -32,16 +32,25 @@ def signup():
     user.password = generate_password_hash(data['password'], method="sha256")
 
     user.save()
-    return jsonify({"signup": True})
+    return jsonify({"signup": True, "user": user.json()})
 
 
 @app.route("/user/<string:_id>/assignments", methods=["GET"])
 def assignment_list(_id):
-    # data = request.get_json()
-    pass
+    assignments = Assignment.find_many_by("manager", _id)
+    if assignments:
+        return jsonify([a.json() for a in assignments]), 200
+    return jsonify({"msg": "no assignments found"}), 404
 
 
-@app.route("/user/<string:user_id>/assignments/<string:assignment_id>", methods=["GET", "POST"])
-def assignment(user_id, assignment_id):
-    # data = request.get_json()
-    pass
+@app.route("/assignment/<string:_id>", methods=["GET", "POST"])
+def assignment(_id):
+    data = request.get_json()
+    assignment = Assignment.find_by_id(_id)
+    for key, val in data:
+        if hasattr(assignment, key):
+            setattr(assignment, key, val)
+
+    return jsonify({"assignment": assignment.json()})
+
+
