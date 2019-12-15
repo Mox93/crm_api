@@ -4,4 +4,4 @@ flask-mongoengine
 Flask-JWT-Extended
 graphene
 Werkzeug
-
+flask_httpauth
