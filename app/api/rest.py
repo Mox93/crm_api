@@ -47,10 +47,23 @@ def assignment_list(_id):
 def assignment(_id):
     data = request.get_json()
     assignment = Assignment.find_by_id(_id)
+
     for key, val in data:
         if hasattr(assignment, key):
             setattr(assignment, key, val)
 
+    assignment.save()
     return jsonify({"assignment": assignment.json()})
 
+
+app.route("/assignment/new", methods=["POST"])
+def new_assignment():
+    data = request.get_json()
+    assignment = Assignment()
+    for key, val in data:
+        if hasattr(assignment, key):
+            setattr(assignment, key, val)
+
+    assignment.save()
+    return jsonify({"assignment": assignment.json()})
 
