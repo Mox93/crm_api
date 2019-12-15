@@ -10,7 +10,7 @@ class FieldModel(ExtendedDocument):
 
     # TODO implement tags
 
-    name = db.StringField(required=True, max_length=50, default="untitled_field")
+    name = db.StringField(required=True, default="untitled_field")
     question = db.StringField(max_length=500)
     data_type = db.StringField(required=True, choices=DTYPES.keys(), default="dynamic")
     # input_type = db.StringField(choices=INPUT_TYPES, default=INPUT_TYPES[0])

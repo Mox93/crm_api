@@ -1,5 +1,6 @@
 from . import db, ExtendedDocument
 from .role import EmbeddedRole
+from .reference import Reference
 
 
 class Company(ExtendedDocument):
@@ -14,6 +15,11 @@ class Company(ExtendedDocument):
     phone_number = db.StringField(unique=True, sparse=True)
     # team = db.ListField(db.ReferenceField(User, reverse_delete_rule=4), required=True)
     roles = db.EmbeddedDocumentListField(EmbeddedRole, required=True)
+
+    # campaigns = db.EmbeddedDocumentField()  # Campaign
+    # customers = db.EmbeddedDocumentField()  # Customer
+
+    stuff = db.EmbeddedDocumentListField(Reference)
 
     @classmethod
     def find_by_name(cls, name):
