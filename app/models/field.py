@@ -1,7 +1,7 @@
 from . import *
 
 
-class FieldModel(ExtendedDocument):
+class Field(ExtendedDocument):
     """
     ...
     """
@@ -57,11 +57,11 @@ class FieldModel(ExtendedDocument):
             raise db.ValidationError(msg)
 
         if isinstance(self.name, str):
-            n = FieldModel.name.max_length
-            self.name = "_".join(self.name.lower().split(" "))[:n] or FieldModel.name.default
+            n = Field.name.max_length
+            self.name = "_".join(self.name.lower().split(" "))[:n] or Field.name.default
 
         if isinstance(self.question, str):
-            n = FieldModel.question.max_length
+            n = Field.question.max_length
             self.question = self.question[:n]
 
     def __repr__(self):
@@ -71,7 +71,7 @@ class FieldModel(ExtendedDocument):
     def as_embedded(cls, *args, **kwargs):
         if not cls._embedded:
 
-            cls._embedded = type("EmbeddedFieldModel", (ExtendedEmbeddedDocument,),
+            cls._embedded = type("EmbeddedField", (ExtendedEmbeddedDocument,),
                                  {"index": db.IntField(required=True, default=-1),
                                   "question": cls.question,
                                   "data_type": cls.data_type,
@@ -95,5 +95,5 @@ class FieldModel(ExtendedDocument):
         return cls._embedded
 
 
-EmbeddedFieldModel = FieldModel.as_embedded()
+EmbeddedField = Field.as_embedded()
 

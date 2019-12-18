@@ -1,4 +1,4 @@
-from models.field import FieldModel
+from models.field import Field as FieldModel
 from .utils import DBInterface
 from graphene import (ObjectType, Mutation, InputObjectType,
                       String, Int, Boolean, ID, List, Field, InputField)

@@ -1,9 +1,9 @@
 from . import db, ExtendedDocument, ExtendedEmbeddedDocument
-from models.field import EmbeddedFieldModel
+from models.field import EmbeddedField
 from models.collection import CollectionTemplate, Reference
 
 
-class TextCard(ExtendedDocument):
+class TitleCard(ExtendedEmbeddedDocument):
     title = db.StringField(required=True, default="Untitled Form")
     description = db.StringField()
 
@@ -17,9 +17,9 @@ class FormTemplate(ExtendedDocument):
     # TODO divide the form visually into sections
 
     name = db.StringField(required=True, default="Untitled Form")
-    title_card = db.EmbeddedDocumentField(TextCard)
-    text_cards = db.EmbeddedDocumentListField(TextCard)
-    fields = db.EmbeddedDocumentListField(EmbeddedFieldModel)
+    title_card = db.EmbeddedDocumentField(TitleCard, required=True)
+    sub_title_cards = db.EmbeddedDocumentListField(TitleCard)
+    fields = db.EmbeddedDocumentListField(EmbeddedField)
 
     # form meta data
     collections = db.ListField(db.LazyReferenceField(CollectionTemplate, reverse_delete_rule=4))
@@ -41,7 +41,7 @@ class FormTemplate(ExtendedDocument):
             return -1, None
 
 
-class FormMapModel(ExtendedDocument):
+class FormMap(ExtendedDocument):
     """
     ...
     """

@@ -1,5 +1,5 @@
 from models.form import FormTemplate
-from models.field import EmbeddedFieldModel
+from models.field import EmbeddedField
 from .utils import DBInterface
 from .field import EmbeddedFieldType, EmbeddedFieldInput, AddField, EditField, RemoveField
 from graphene import (ObjectType, Mutation, InputObjectType,
@@ -110,7 +110,7 @@ class FormOps(Mutation):
             ops.append("add_field")
 
             form = FormTemplate.find_by_id(add_field.form_id)
-            field = EmbeddedFieldModel(**add_field.field_data)
+            field = EmbeddedField(**add_field.field_data)
 
             try:
                 form.fields.insert(field.index, field)
