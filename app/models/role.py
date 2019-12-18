@@ -7,11 +7,11 @@ class Role(ExtendedDocument):
     """
     meta = {"collection": "roles"}
 
-    name = db.StringField(required=True)
+    name = db.StringField(required=True, unique=True)
     description = db.StringField()
     # TODO rethink the structure
-    group = db.IntField(required=True)
-    priority_level = db.IntField(required=True)
+    group = db.IntField(required=True, unique_with=["priority_level"])
+    priority_level = db.IntField(required=True, unique_with=["group"])
 
     # Embedded Document Version
     _embedded = None

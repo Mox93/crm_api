@@ -12,7 +12,8 @@ class FormTemplate(ExtendedDocument):
     """
     ...
     """
-    meta = {'collection': 'forms'}
+    meta = {'collection': 'forms',
+            "allow_inheritance": True}
 
     # TODO divide the form visually into sections
 

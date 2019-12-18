@@ -33,25 +33,24 @@ class AddProductCategory(Mutation):
 
     class Arguments:
         company_id = ID(required=True)
-        name = String(required=True)
-        description = String()
+        product_category_data = StrictProductCategoryInput(required=True)
 
     company = Field(lambda: CompanyType)
 
     @staticmethod
-    def mutate(root, info, company_id, name, description=None):
+    def mutate(root, info, company_id, product_category_data):
         company = CompanyModel.find_by_id(company_id)
         if not company:
             raise Exception("Company doesn't exist!")
 
-        product_category = ProductCategoryModel.find_one_by("name", name)
+        product_category = ProductCategoryModel.find_one_by("name", product_category_data.name)
         if product_category:
             company.product_categories.append(product_category)
             company.save()
 
             return ProductCategory(company=company, product_category=product_category)
 
-        product_category = ProductCategoryModel(name, description)
+        product_category = ProductCategoryModel(**product_category_data)
         product_category.save()
 
         company.product_categories.append(product_category)

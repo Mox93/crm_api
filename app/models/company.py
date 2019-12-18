@@ -1,6 +1,7 @@
 from . import db, ExtendedDocument
 from .role import EmbeddedRole
 from .reference import Reference
+from .product import ProductCategory
 
 
 class Company(ExtendedDocument):
@@ -13,8 +14,8 @@ class Company(ExtendedDocument):
     name = db.StringField(required=True, unique=True)
     email = db.EmailField(unique=True, sparse=True)
     phone_number = db.StringField(unique=True, sparse=True)
-    # team = db.ListField(db.ReferenceField(User, reverse_delete_rule=4), required=True)
     roles = db.EmbeddedDocumentListField(EmbeddedRole, required=True)
+    product_categories = db.ListField(db.ReferenceField(ProductCategory, reverse_delete_rule=4))
 
     # campaigns = db.EmbeddedDocumentField()  # Campaign
     # customers = db.EmbeddedDocumentField()  # Customer

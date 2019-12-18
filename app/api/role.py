@@ -1,6 +1,9 @@
 from models.role import Role as RoleModel
+from models.company import Company as CompanyModel
+from models.role import EmbeddedRole
 from .utils import DBInterface
-from graphene import ObjectType, Mutation, InputObjectType, String, Boolean, Field, List, Int
+from .company import Company as CompanyType
+from graphene import ObjectType, Mutation, InputObjectType, String, Boolean, Field, List, Int, ID
 
 
 class CommonAttributes(object):
@@ -44,3 +47,29 @@ class NewRole(Mutation):
         role = RoleModel(**role_data)
         role.save()
         return NewRole(ok=True, role=role)
+
+
+class AddRoles(Mutation):
+    class Meta:
+        name = "AddRole"
+        description = "..."
+
+    class Arguments:
+        company_id = ID(required=True)
+        role_data = StrictRoleInput(required=True)
+
+    company = Field(lambda: CompanyType)
+
+    @staticmethod
+    def mutate(root, info, company_id, role_data):
+        company = CompanyModel.find_by_id(company_id)
+        if not company:
+            raise Exception("Company doesn't exist!")
+
+        role = EmbeddedRole(**role_data)
+
+        company.roles.append(role)
+        company.save()
+
+        return AddRoles(company=company)
+

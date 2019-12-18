@@ -1,9 +1,11 @@
 from models.user import User as UserModel
+from models.company import Company as CompanyModel
 from werkzeug.security import generate_password_hash
 from .utils import DBInterface
 from .auth import Token, create_tokens
 from .role import Role
 from graphene import ObjectType, Mutation, InputObjectType, String, Boolean, Field, ID, List
+from common.utils import send_email
 
 
 class CommonAttributes(object):
@@ -80,3 +82,41 @@ class Signup(Mutation):
         user.save()
         return Signup(ok=True, user=user, token=create_tokens(user))
 
+
+class AddMember(Mutation):
+    class Meta:
+        name = "AddMember"
+        description = "..."
+
+    class Arguments:
+        email = String(required=True)
+        company_id = ID(required=True)
+
+    ok = Boolean()
+
+    @staticmethod
+    def mutate(root, info, email, company_id):
+        company = CompanyModel.find_by_id(company_id)
+        if not company:
+            return AddMember(ok=False)
+
+        user = User.find_by_email(email)
+        if user:
+            if user.company:
+                return AddMember(ok=False)
+
+            msg = f"We would like you to join our company '{company.name}'.\n" \
+                  f"Please accept thought this link </>"
+
+            send_email(email, msg)
+
+            # TODO send invitation
+            return AddMember(ok=True)
+
+        # TODO create a url for sign up
+        msg = f"We would like you to join our company '{company.name}'.\n" \
+              f"Please sign up to this link </>"
+
+        send_email(email, msg)
+
+        return AddMember(ok=True)
