@@ -1,22 +1,7 @@
 from . import db, ExtendedDocument
 from .form import FormTemplate
-
-
-class ProductCategory(ExtendedDocument):
-    """
-    ...
-    """
-    meta = {"collection": "product_categories"}
-
-    name = db.StringField(required=True, unique=True)
-    description = db.StringField()
-
-    @classmethod
-    def search_by_name(cls, name):
-        return cls.objects(name__icontains=name)
-
-
 from .company import Company
+from .tag import ProductCategory
 
 
 class ProductForm(FormTemplate):

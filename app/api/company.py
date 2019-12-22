@@ -1,17 +1,18 @@
 from models.company import Company as CompanyModel
 from models.role import EmbeddedRole
 from models.user import User
+from models.tag import ProductCategory as ProductCategoryModel
 from .utils import DBInterface
-from .role import Role, StrictRoleInput
-from .product import ProductCategory
-from graphene import ObjectType, Mutation, InputObjectType, String, Boolean, Field, List, InputField, ID, Int
+from .tag import ProductCategory, StrictProductCategoryInput
+# from .role import Role, StrictRoleInput
+from graphene import ObjectType, Mutation, InputObjectType, String, Boolean, Field, List, ID
 
 
 class CommonAttributes(object):
     name = String()
     email = String()
     phone_number = String()
-    roles = List(Role)
+    # roles = List(Role)
     product_categories = List(ProductCategory)
 
 
@@ -67,3 +68,35 @@ class NewCompany(Mutation):
 
         return NewCompany(ok=True, company=company)
 
+
+class AddProductCategory(Mutation):
+    class Meta:
+        name = "AddProductCategory"
+        description = "..."
+
+    class Arguments:
+        company_id = ID(required=True)
+        product_category_data = StrictProductCategoryInput(required=True)
+
+    company = Field(lambda: Company)
+
+    @staticmethod
+    def mutate(root, info, company_id, product_category_data):
+        company = CompanyModel.find_by_id(company_id)
+        if not company:
+            raise Exception("Company doesn't exist!")
+
+        product_category = ProductCategoryModel.find_one_by("name", product_category_data.name)
+        if product_category:
+            company.product_categories.append(product_category)
+            company.save()
+
+            return ProductCategory(company=company, product_category=product_category)
+
+        product_category = ProductCategoryModel(**product_category_data)
+        product_category.save()
+
+        company.product_categories.append(product_category)
+        company.save()
+
+        return ProductCategory(company=company)

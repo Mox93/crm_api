@@ -1,7 +1,7 @@
 from . import db, ExtendedDocument
 from .role import EmbeddedRole
 from .reference import Reference
-from .product import ProductCategory
+from .tag import ProductCategory
 
 
 class Company(ExtendedDocument):

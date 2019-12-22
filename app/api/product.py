@@ -1,62 +1,13 @@
 from .utils import DBInterface
-from .company import Company as CompanyType
 from models.company import Company as CompanyModel
-from models.product import ProductCategory as ProductCategoryModel, Product as ProductModel
-from graphene import ObjectType, Mutation, InputObjectType, String, Boolean, Field, List, InputField, ID
+from models.product import Product as ProductModel
+from .tag import ProductCategory, StrictProductCategoryInput
+from graphene import ObjectType, Mutation, InputObjectType, String, Field, List, ID
 
 
 class CommonAttributes(object):
     name = String()
     description = String()
-
-
-class ProductCategoryInterface(CommonAttributes, DBInterface):
-    pass
-
-
-class ProductCategory(ObjectType):
-    class Meta:
-        name = "ProductCategory"
-        description = "..."
-        interfaces = (ProductCategoryInterface,)
-
-
-class StrictProductCategoryInput(InputObjectType):
-    name = String(required=True)
-    description = String()
-
-
-class AddProductCategory(Mutation):
-    class Meta:
-        name = "AddProductCategory"
-        description = "..."
-
-    class Arguments:
-        company_id = ID(required=True)
-        product_category_data = StrictProductCategoryInput(required=True)
-
-    company = Field(lambda: CompanyType)
-
-    @staticmethod
-    def mutate(root, info, company_id, product_category_data):
-        company = CompanyModel.find_by_id(company_id)
-        if not company:
-            raise Exception("Company doesn't exist!")
-
-        product_category = ProductCategoryModel.find_one_by("name", product_category_data.name)
-        if product_category:
-            company.product_categories.append(product_category)
-            company.save()
-
-            return ProductCategory(company=company, product_category=product_category)
-
-        product_category = ProductCategoryModel(**product_category_data)
-        product_category.save()
-
-        company.product_categories.append(product_category)
-        company.save()
-
-        return ProductCategory(company=company)
 
 
 class ProductInterface(CommonAttributes, DBInterface):
