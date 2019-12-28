@@ -1,7 +1,7 @@
 from .utils import DBInterface
 from models.company import Company as CompanyModel
 from models.product import Product as ProductModel
-from .tag import ProductCategory, StrictProductCategoryInput
+from .tag import ProductCategory, NewProductCategoryInput
 from graphene import ObjectType, Mutation, InputObjectType, String, Field, List, ID
 
 
@@ -22,10 +22,10 @@ class Product(ObjectType):
         interfaces = (ProductInterface,)
 
 
-class StrictProductInput(InputObjectType):
+class NewProductInput(InputObjectType):
     name = String(required=True)
     description = String()
-    product_categories = List(StrictProductCategoryInput)
+    product_categories = List(NewProductCategoryInput)
 
 
 class NewProduct(Mutation):
@@ -35,7 +35,7 @@ class NewProduct(Mutation):
 
     class Arguments:
         company_id = ID(required=True)
-        product_data = StrictProductInput(required=True)
+        product_data = NewProductInput(required=True)
 
     product = Field(lambda: Product)
 

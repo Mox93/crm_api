@@ -3,8 +3,8 @@ from models.role import EmbeddedRole
 from models.user import User
 from models.tag import ProductCategory as ProductCategoryModel
 from .utils import DBInterface
-from .tag import ProductCategory, StrictProductCategoryInput
-# from .role import Role, StrictRoleInput
+from .tag import ProductCategory, NewProductCategoryInput
+# from .role import Role, NewRoleInput
 from graphene import ObjectType, Mutation, InputObjectType, String, Boolean, Field, List, ID
 
 
@@ -27,11 +27,11 @@ class Company(ObjectType):
         interfaces = (CompanyInterface,)
 
 
-class StrictCompanyInput(InputObjectType):
+class NewCompanyInput(InputObjectType):
     name = String(required=True)
     email = String()
     phone_number = String()
-    # roles = List(InputField(StrictRoleInput))
+    # roles = List(InputField(NewRoleInput))
 
 
 class NewCompany(Mutation):
@@ -40,7 +40,7 @@ class NewCompany(Mutation):
         description = "..."
 
     class Arguments:
-        company_data = StrictCompanyInput(required=True)
+        company_data = NewCompanyInput(required=True)
         user_id = ID()
 
     ok = Boolean()
@@ -76,7 +76,7 @@ class AddProductCategory(Mutation):
 
     class Arguments:
         company_id = ID(required=True)
-        product_category_data = StrictProductCategoryInput(required=True)
+        product_category_data = NewProductCategoryInput(required=True)
 
     company = Field(lambda: Company)
 

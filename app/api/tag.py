@@ -18,7 +18,7 @@ class ProductCategory(ObjectType):
         interfaces = (ProductCategoryInterface,)
 
 
-class StrictProductCategoryInput(InputObjectType):
+class NewProductCategoryInput(InputObjectType):
     name = String(required=True)
     description = String()
 

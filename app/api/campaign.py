@@ -24,7 +24,7 @@ class Campaign(ObjectType):
         interfaces = (CampaignInterface,)
 
 
-class StrictCampaignInput(InputObjectType):
+class NewCampaignInput(InputObjectType):
     name = String(required=True)
     description = String()
     platform = String()
@@ -38,7 +38,7 @@ class NewCampaign(Mutation):
     class Arguments:
         company_id = ID(required=True)
         product_id = ID(required=True)
-        campaign_data = StrictCampaignInput(required=True)
+        campaign_data = NewCampaignInput(required=True)
 
     campaign = Field(lambda: Campaign)
 

@@ -24,7 +24,7 @@ class Role(ObjectType):
         interfaces = (RoleInterface,)
 
 
-class StrictRoleInput(InputObjectType):
+class NewRoleInput(InputObjectType):
     name = String(required=True)
     description = String()
     group = Int(required=True)
@@ -37,7 +37,7 @@ class NewRole(Mutation):
         description = "..."
 
     class Arguments:
-        role_data = StrictRoleInput(required=True)
+        role_data = NewRoleInput(required=True)
 
     ok = Boolean()
     role = Field(lambda: Role)
@@ -56,7 +56,7 @@ class AddRoles(Mutation):
 
     class Arguments:
         company_id = ID(required=True)
-        role_data = StrictRoleInput(required=True)
+        role_data = NewRoleInput(required=True)
 
     company = Field(lambda: CompanyType)
 

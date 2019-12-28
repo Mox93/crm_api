@@ -25,7 +25,7 @@ class Customer(ObjectType):
         interfaces = (CustomerInterface,)
 
 
-class StrictCustomerInput(InputObjectType):
+class NewCustomerInput(InputObjectType):
     first_name = String(required=True)
     last_name = String(required=True)
     email = String(required=True)
@@ -39,7 +39,7 @@ class AddCustomer(Mutation):
 
     class Arguments:
         campaign_id = ID(required=True)
-        customer_data = StrictCustomerInput(required=True)
+        customer_data = NewCustomerInput(required=True)
 
     customer = Field(lambda: Customer)
 

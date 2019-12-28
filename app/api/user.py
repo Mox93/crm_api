@@ -42,7 +42,7 @@ class Login(ObjectType):
     token = Field(Token)
 
 
-class StrictUserInput(InputObjectType):
+class NewUserInput(InputObjectType):
     first_name = String(required=True)
     last_name = String(required=True)
     email = String(required=True)
@@ -60,7 +60,7 @@ class Signup(Mutation):
         description = "..."
 
     class Arguments:
-        user_data = StrictUserInput(required=True)
+        user_data = NewUserInput(required=True)
 
     ok = Boolean()
     user = Field(lambda: User)
