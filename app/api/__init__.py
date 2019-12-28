@@ -1,5 +1,5 @@
 from graphene import Schema, ObjectType, List, Field, ID, String, Int, Boolean
-from .user import Signup, Login, AddMember
+from .user import Signup, Login, AddMember, User as UserType
 from .auth import Token, create_tokens
 from .role import NewRole, Role, AddRoles
 from .company import NewCompany, Company as CompanyType, AddProductCategory
@@ -25,7 +25,9 @@ class QueryType(ObjectType):
     login = Field(Login, email=String(required=True), password=String(required=True))
 
     # Company
+    company = Field(CompanyType, _id=ID(required=True))
     company_list = List(CompanyType)
+    company_members = List(UserType, company_id=ID(required=True))
 
     # Product
     product_category_list = List(ProductCategoryType)
@@ -50,8 +52,16 @@ class QueryType(ObjectType):
         raise Exception("email or password were incorrect")
 
     @staticmethod
+    def resolve_company(root, info, _id):
+        return CompanyModel.find_by_id(_id)
+
+    @staticmethod
     def resolve_company_list(root, info):
         return CompanyModel.find_all()
+
+    @staticmethod
+    def resolve_company_members(root, info, company_id):
+        return UserModel.find_many_by("company", company_id)
 
     @staticmethod
     def resolve_product_category_list(root, info):
