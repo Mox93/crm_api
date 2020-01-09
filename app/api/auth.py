@@ -9,27 +9,34 @@ class Token(ObjectType):
         name = "Token"
         description = "..."
 
-    access = String()
-    refresh = String()
+    access = String(required=True)
+    refresh = String(required=True)
 
 
 @jwt.user_claims_loader
 def add_claims_to_access_token(user):
-    return {"creation_date": int(user.creation_date.timestamp()),
-            "mode": "testing"}
+    result = {"role": [str(r._id) for r in user.role],
+              "mode": "testing"}
+
+    if user.company:
+        result["company"] = str(user.company.id)
+
+    return result
 
 
 @jwt.user_identity_loader
 def user_identity_lookup(user):
-    return {  # "_id": str(user._id),
-            "email": user.email,
-            "first_name": user.first_name,
-            "last_name": user.last_name}
+    return {"_id": str(user._id),
+            # "email": user.email,
+            "name": f"{user.first_name} {user.last_name}"}
 
 
-def create_tokens(user):
-    access_token = create_access_token(identity=user, expires_delta=timedelta(minutes=1), fresh=True)
-    refresh_token = create_refresh_token(identity=user, expires_delta=timedelta(days=30))
+def create_tokens(user, remember_me=False):
+    access_token = create_access_token(identity=user, expires_delta=timedelta(minutes=10), fresh=False)
+    if remember_me:
+        refresh_token = create_refresh_token(identity=user, expires_delta=timedelta(days=30))
+    else:
+        refresh_token = create_refresh_token(identity=user, expires_delta=timedelta(days=1))
 
     return Token(access=access_token, refresh=refresh_token)
 

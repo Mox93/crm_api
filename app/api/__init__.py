@@ -22,7 +22,8 @@ class QueryType(ObjectType):
         description = "..."
 
     # User
-    login = Field(Login, email=String(required=True), password=String(required=True))
+    login = Field(Login, email=String(required=True), password=String(required=True),
+                  remember_me=Boolean(), required=True)
 
     # Company
     company = Field(CompanyType, _id=ID(required=True))
@@ -45,10 +46,10 @@ class QueryType(ObjectType):
 
     # RESOLVERS
     @staticmethod
-    def resolve_login(root, info, email, password):
+    def resolve_login(root, info, email, password, remember_me=False):
         user = UserModel.find_by_email(email)
         if user and check_password_hash(user.password, password):
-            return Login(user=user, token=create_tokens(user))
+            return Login(user=user, token=create_tokens(user, remember_me))
         raise Exception("email or password were incorrect")
 
     @staticmethod
@@ -102,12 +103,12 @@ class MutationType(ObjectType):
         description = "..."
 
     # User
-    signup = Signup.Field()
+    signup = Signup.Field(required=True)
     add_member = AddMember.Field()
 
     # Company
     new_company = NewCompany.Field()
-    new_role = NewRole.Field()  # TODO why do we need that???
+    new_role = NewRole.Field()  # TODO why do we need this???
     add_role = AddRoles.Field()
 
     # Product
