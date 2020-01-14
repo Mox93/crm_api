@@ -8,7 +8,6 @@ class ProductForm(FormTemplate):
     """
     ...
     """
-    meta = {"collection": "product_forms"}
 
     company = db.LazyReferenceField(Company, reverse_delete_rule=2)
     product_categories = db.ListField(db.ReferenceField(ProductCategory, reverse_delete_rule=4))

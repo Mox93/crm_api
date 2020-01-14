@@ -11,7 +11,7 @@ class Field(ExtendedDocument):
     # TODO implement tags
 
     name = db.StringField(required=True, default="untitled_field")
-    question = db.StringField(max_length=500)
+    question = db.StringField()
     data_type = db.StringField(required=True, choices=DTYPES.keys(), default="dynamic")
     # input_type = db.StringField(choices=INPUT_TYPES, default=INPUT_TYPES[0])
     required = db.BooleanField(required=True, default=False)

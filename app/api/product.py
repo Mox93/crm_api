@@ -43,10 +43,31 @@ class NewProduct(Mutation):
     def mutate(root, info, company_id, product_data):
         company = CompanyModel.find_by_id(company_id)
         if not company:
-            raise Exception("Company doesn't exist!")
+            raise Exception("company doesn't exist!")
 
         product = ProductModel(**product_data, company=company_id)
         product.save()
 
         return NewProduct(product=product)
+
+
+class NewProductFormInput(InputObjectType):
+    pass
+
+
+class NewProductForm(Mutation):
+    class Meta:
+        name = "ProductForm"
+        description = "..."
+
+    class Arguments:
+        company_id = ID(required=True)
+        product_form_data = NewProductFormInput(required=True)
+
+    # TODO return something
+
+    @staticmethod
+    def mutate(root, info, company_id, product_form_data):
+        # TODO write the body
+        pass
 

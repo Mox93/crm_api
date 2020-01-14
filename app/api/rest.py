@@ -6,6 +6,8 @@ from flask import request
 from models.user import User
 from models.assignment import Assignment
 from models.task import Task
+from models.product import ProductForm, Product
+from models import create_model
 
 
 @app.route("/login", methods=["POST"])
@@ -66,4 +68,18 @@ def new_assignment():
 
     assignment.save()
     return jsonify({"assignment": assignment.json()})
+
+
+app.route("/product/new/<string:form_id>", methofd=["POST"])
+def new_product(form_id):
+    form = ProductForm.find_by_id(form_id)
+    if not form:
+        return jsonify({ "msg": "product type not found"})
+
+    ProductModel = create_model(form.name, (Product,), form.fields)
+    data = request.get_json()
+    product = ProductModel(**data)
+    product.save()
+
+    return jsonify(product.json())
 

@@ -124,6 +124,15 @@ class ExtendedEmbeddedDocument(db.EmbeddedDocument):
         return result
 
 
+def create_field(data):
+    field = DTYPES[data.data_type]
+    return field(required=data.required, unique=data.unique)
+
+
+def create_model(name, parents, attributes):
+    return type(name, parents, {field.name: create_field(field) for field in attributes})
+
+
 DTYPES = {"bool": db.BooleanField,
           "datetime": db.DateTimeField,
           "dict": db.DictField,
