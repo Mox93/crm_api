@@ -22,12 +22,19 @@ jwt = JWTManager(app)
 
 
 # Database
+import os
 from models import db, DB_NAME, DB_HOST, DB_PORT
 from flask_mongoengine import MongoEngineSessionInterface
 
-app.config["MONGODB_DB"] = DB_NAME
-app.config["MONGODB_PORT"] = DB_PORT
-app.config["MONGODB_HOST"] = DB_HOST
+try:
+    app.config["MONGODB_DB"] = os.environ["DB_NAME"]
+    app.config["MONGODB_HOST"] = os.environ["MONGOLAB_MAROON_URI"]
+    app.config['MONGODB_CONNECT'] = False
+except Exception as e:
+    print(str(e))
+    app.config["MONGODB_DB"] = DB_NAME
+    app.config["MONGODB_PORT"] = DB_PORT
+    app.config["MONGODB_HOST"] = DB_HOST
 
 db.init_app(app)
 app.session_interface = MongoEngineSessionInterface(db)

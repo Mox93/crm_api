@@ -11400,7 +11400,7 @@ var $author$project$API$Query$login = F3(
 			object_,
 			$elm$core$Basics$identity);
 	});
-var $author$project$Api$api_url = 'http://127.0.0.1:5000/api';
+var $author$project$Api$api_url = 'https://rizzmi-test.herokuapp.com/api';
 var $dillonkearns$elm_graphql$Graphql$Http$Query = F2(
 	function (a, b) {
 		return {$: 'Query', a: a, b: b};
