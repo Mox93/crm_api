@@ -10068,6 +10068,9 @@ var $author$project$Main$GotHomeMsg = function (a) {
 var $author$project$Main$GotLoginMsg = function (a) {
 	return {$: 'GotLoginMsg', a: a};
 };
+var $author$project$Main$GotMyProfileMsg = function (a) {
+	return {$: 'GotMyProfileMsg', a: a};
+};
 var $author$project$Main$GotNotFoundMsg = function (a) {
 	return {$: 'GotNotFoundMsg', a: a};
 };
@@ -10083,6 +10086,9 @@ var $author$project$Main$Home = function (a) {
 var $author$project$Route$Home = {$: 'Home'};
 var $author$project$Main$Login = function (a) {
 	return {$: 'Login', a: a};
+};
+var $author$project$Main$MyProfile = function (a) {
+	return {$: 'MyProfile', a: a};
 };
 var $author$project$Main$NotFound = function (a) {
 	return {$: 'NotFound', a: a};
@@ -10131,6 +10137,14 @@ var $author$project$Page$Login$init = function (session) {
 			session,
 			A4($author$project$Page$Login$Form, '', '', false, false),
 			_List_Nil),
+		$elm$core$Platform$Cmd$none);
+};
+var $author$project$Page$MyProfile$ViewMode = function (a) {
+	return {$: 'ViewMode', a: a};
+};
+var $author$project$Page$MyProfile$init = function (session) {
+	return _Utils_Tuple2(
+		$author$project$Page$MyProfile$ViewMode(session),
 		$elm$core$Platform$Cmd$none);
 };
 var $author$project$Page$NotFound$Model = function (session) {
@@ -10207,9 +10221,12 @@ var $author$project$Route$routeToPieces = function (page) {
 		case 'Signup':
 			return _List_fromArray(
 				['signup']);
-		default:
+		case 'Welcome':
 			return _List_fromArray(
 				['welcome']);
+		default:
+			return _List_fromArray(
+				['profile']);
 	}
 };
 var $author$project$Route$toString = function (page) {
@@ -10230,6 +10247,15 @@ var $author$project$Page$Home$toSession = function (model) {
 };
 var $author$project$Page$Login$toSession = function (model) {
 	return model.session;
+};
+var $author$project$Page$MyProfile$toSession = function (model) {
+	if (model.$ === 'ViewMode') {
+		var val = model.a;
+		return val;
+	} else {
+		var val = model.a;
+		return val;
+	}
 };
 var $author$project$Page$NotFound$toSession = function (model) {
 	return model.session;
@@ -10267,6 +10293,9 @@ var $author$project$Main$toSession = function (page) {
 		case 'Welcome':
 			var welcome = page.a;
 			return $author$project$Page$Welcome$toSession(welcome);
+		case 'MyProfile':
+			var profile = page.a;
+			return $author$project$Page$MyProfile$toSession(profile);
 		case 'NotFound':
 			var notFound = page.a;
 			return $author$project$Page$NotFound$toSession(notFound);
@@ -10326,13 +10355,20 @@ var $author$project$Main$changeRouteTo = F2(
 				case 'Logout':
 					var _v5 = maybeRoute.a;
 					return _Utils_Tuple2(model, $author$project$Api$logout);
-				default:
+				case 'Welcome':
 					var _v6 = maybeRoute.a;
 					return A3(
 						$author$project$Main$updateWith,
 						$author$project$Main$Welcome,
 						$author$project$Main$GotWelcomeMsg,
 						$author$project$Page$Welcome$init(session));
+				default:
+					var _v7 = maybeRoute.a;
+					return A3(
+						$author$project$Main$updateWith,
+						$author$project$Main$MyProfile,
+						$author$project$Main$GotMyProfileMsg,
+						$author$project$Page$MyProfile$init(session));
 			}
 		}
 	});
@@ -10457,6 +10493,7 @@ var $elm$url$Url$Parser$parse = F2(
 	});
 var $author$project$Route$Login = {$: 'Login'};
 var $author$project$Route$Logout = {$: 'Logout'};
+var $author$project$Route$MyProfile = {$: 'MyProfile'};
 var $author$project$Route$Signup = {$: 'Signup'};
 var $author$project$Route$Welcome = {$: 'Welcome'};
 var $elm$url$Url$Parser$Parser = function (a) {
@@ -10556,7 +10593,11 @@ var $author$project$Route$parser = $elm$url$Url$Parser$oneOf(
 			A2(
 			$elm$url$Url$Parser$map,
 			$author$project$Route$Welcome,
-			$elm$url$Url$Parser$s('welcome'))
+			$elm$url$Url$Parser$s('welcome')),
+			A2(
+			$elm$url$Url$Parser$map,
+			$author$project$Route$MyProfile,
+			$elm$url$Url$Parser$s('profile'))
 		]));
 var $author$project$Route$fromUrl = function (url) {
 	return A2($elm$url$Url$Parser$parse, $author$project$Route$parser, url);
@@ -10648,6 +10689,16 @@ var $author$project$Page$Login$subscriptions = function (model) {
 		$author$project$Page$Login$GotSession,
 		$author$project$Session$navKey(model.session));
 };
+var $author$project$Page$MyProfile$GotSession = function (a) {
+	return {$: 'GotSession', a: a};
+};
+var $author$project$Page$MyProfile$subscriptions = function (model) {
+	return A2(
+		$author$project$Session$changes,
+		$author$project$Page$MyProfile$GotSession,
+		$author$project$Session$navKey(
+			$author$project$Page$MyProfile$toSession(model)));
+};
 var $author$project$Page$NotFound$GotSession = function (a) {
 	return {$: 'GotSession', a: a};
 };
@@ -10714,6 +10765,12 @@ var $author$project$Main$subscriptions = function (model) {
 				$elm$core$Platform$Sub$map,
 				$author$project$Main$GotWelcomeMsg,
 				$author$project$Page$Welcome$subscriptions(welcome));
+		case 'MyProfile':
+			var profile = model.a;
+			return A2(
+				$elm$core$Platform$Sub$map,
+				$author$project$Main$GotMyProfileMsg,
+				$author$project$Page$MyProfile$subscriptions(profile));
 		default:
 			return $elm$core$Platform$Sub$none;
 	}
@@ -10960,7 +11017,6 @@ var $author$project$Page$Home$update = F2(
 var $author$project$Page$Login$GotResponse = function (a) {
 	return {$: 'GotResponse', a: a};
 };
-var $author$project$Route$Root = {$: 'Root'};
 var $author$project$Page$Login$ServerError = function (a) {
 	return {$: 'ServerError', a: a};
 };
@@ -12314,8 +12370,8 @@ var $author$project$User$encode = function (user) {
 				function () {
 					var _v0 = user.company;
 					if (_v0.$ === 'Just') {
-						var company = _v0.a;
-						return $elm$json$Json$Encode$string(company);
+						var val = _v0.a;
+						return $elm$json$Json$Encode$string(val);
 					} else {
 						return $elm$json$Json$Encode$null;
 					}
@@ -12494,7 +12550,7 @@ var $author$project$Page$Login$update = F2(
 										A2(
 										$author$project$Route$replaceUrl,
 										$author$project$Session$navKey(model.session),
-										$author$project$Route$Root)
+										$author$project$Route$MyProfile)
 									])));
 					case 'Failure':
 						var err = response.a;
@@ -12539,6 +12595,40 @@ var $author$project$Page$Login$update = F2(
 						$author$project$Route$replaceUrl,
 						$author$project$Session$navKey(session),
 						$author$project$Route$Welcome));
+		}
+	});
+var $author$project$Page$MyProfile$EditMode = F2(
+	function (a, b) {
+		return {$: 'EditMode', a: a, b: b};
+	});
+var $author$project$Page$MyProfile$Form = {};
+var $author$project$Page$MyProfile$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'EditInfo':
+				return _Utils_Tuple2(
+					A2(
+						$author$project$Page$MyProfile$EditMode,
+						$author$project$Page$MyProfile$toSession(model),
+						$author$project$Page$MyProfile$Form),
+					$elm$core$Platform$Cmd$none);
+			case 'SaveChanges':
+				return _Utils_Tuple2(
+					$author$project$Page$MyProfile$ViewMode(
+						$author$project$Page$MyProfile$toSession(model)),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var session = msg.a;
+				if (model.$ === 'ViewMode') {
+					return _Utils_Tuple2(
+						$author$project$Page$MyProfile$ViewMode(session),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					var form = model.b;
+					return _Utils_Tuple2(
+						A2($author$project$Page$MyProfile$EditMode, session, form),
+						$elm$core$Platform$Cmd$none);
+				}
 		}
 	});
 var $author$project$Page$NotFound$update = F2(
@@ -13000,7 +13090,7 @@ var $author$project$Page$Welcome$update = F2(
 var $author$project$Main$update = F2(
 	function (msg, model) {
 		var _v0 = _Utils_Tuple2(msg, model);
-		_v0$8:
+		_v0$9:
 		while (true) {
 			switch (_v0.a.$) {
 				case 'LinkClicked':
@@ -13036,7 +13126,7 @@ var $author$project$Main$update = F2(
 							$author$project$Main$GotHomeMsg,
 							A2($author$project$Page$Home$update, subMsg, home));
 					} else {
-						break _v0$8;
+						break _v0$9;
 					}
 				case 'GotLoginMsg':
 					if (_v0.b.$ === 'Login') {
@@ -13048,7 +13138,7 @@ var $author$project$Main$update = F2(
 							$author$project$Main$GotLoginMsg,
 							A2($author$project$Page$Login$update, subMsg, login));
 					} else {
-						break _v0$8;
+						break _v0$9;
 					}
 				case 'GotSignupMsg':
 					if (_v0.b.$ === 'Signup') {
@@ -13060,7 +13150,7 @@ var $author$project$Main$update = F2(
 							$author$project$Main$GotSignupMsg,
 							A2($author$project$Page$Signup$update, subMsg, signup));
 					} else {
-						break _v0$8;
+						break _v0$9;
 					}
 				case 'GotWelcomeMsg':
 					if (_v0.b.$ === 'Welcome') {
@@ -13072,7 +13162,19 @@ var $author$project$Main$update = F2(
 							$author$project$Main$GotWelcomeMsg,
 							A2($author$project$Page$Welcome$update, subMsg, welcome));
 					} else {
-						break _v0$8;
+						break _v0$9;
+					}
+				case 'GotMyProfileMsg':
+					if (_v0.b.$ === 'MyProfile') {
+						var subMsg = _v0.a.a;
+						var profile = _v0.b.a;
+						return A3(
+							$author$project$Main$updateWith,
+							$author$project$Main$MyProfile,
+							$author$project$Main$GotMyProfileMsg,
+							A2($author$project$Page$MyProfile$update, subMsg, profile));
+					} else {
+						break _v0$9;
 					}
 				case 'GotNotFoundMsg':
 					if (_v0.b.$ === 'NotFound') {
@@ -13084,7 +13186,7 @@ var $author$project$Main$update = F2(
 							$author$project$Main$GotNotFoundMsg,
 							A2($author$project$Page$NotFound$update, subMsg, notFound));
 					} else {
-						break _v0$8;
+						break _v0$9;
 					}
 				case 'GotSession':
 					if (_v0.b.$ === 'Redirect') {
@@ -13096,33 +13198,32 @@ var $author$project$Main$update = F2(
 								$author$project$Session$navKey(session),
 								$author$project$Route$Home));
 					} else {
-						break _v0$8;
+						break _v0$9;
 					}
 				default:
-					break _v0$8;
+					break _v0$9;
 			}
 		}
 		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	});
-var $author$project$Main$DoNothing = {$: 'DoNothing'};
+var $author$project$Page$Home = {$: 'Home'};
+var $author$project$Page$Login = {$: 'Login'};
+var $author$project$Page$MyProfile = {$: 'MyProfile'};
+var $author$project$Page$NotFound = {$: 'NotFound'};
+var $author$project$Page$Signup = {$: 'Signup'};
+var $author$project$Page$Welcome = {$: 'Welcome'};
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$html$Html$h3 = _VirtualDom_node('h3');
 var $author$project$Route$href = function (targetRoute) {
 	return $elm$html$Html$Attributes$href(
 		$author$project$Route$toString(targetRoute));
 };
-var $author$project$Page$Home$sectionName = function (sec) {
-	switch (sec.$) {
-		case 'Main':
-			return 'Home';
-		case 'Features':
-			return 'Features';
-		case 'Pricing':
-			return 'Pricing';
-		default:
-			return 'Contact Us';
-	}
+var $author$project$Route$Root = {$: 'Root'};
+var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
+	return {$: 'AlignX', a: a};
 };
+var $mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
+var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Right);
 var $author$project$Brand$appBarHeight = 50;
 var $mdgriffith$elm_ui$Internal$Model$Class = F2(
 	function (a, b) {
@@ -18640,52 +18741,30 @@ var $author$project$Brand$shadow = $mdgriffith$elm_ui$Element$Border$shadow(
 		offset: _Utils_Tuple2(1, 1),
 		size: 2
 	});
-var $author$project$Layout$appBar = function (content) {
+var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
+	function (a, b, c) {
+		return {$: 'SpacingStyle', a: a, b: b, c: c};
+	});
+var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
+var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
+	function (x, y) {
+		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
+	});
+var $mdgriffith$elm_ui$Element$spacing = function (x) {
 	return A2(
-		$mdgriffith$elm_ui$Element$row,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-				$mdgriffith$elm_ui$Element$height(
-				$mdgriffith$elm_ui$Element$px($author$project$Brand$appBarHeight)),
-				$author$project$Brand$defaultBarPadding,
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$secondaryColor),
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$primaryTextColorDBg),
-				$author$project$Brand$shadow
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$link,
-				_List_fromArray(
-					[$mdgriffith$elm_ui$Element$Font$bold]),
-				{
-					label: A2(
-						$mdgriffith$elm_ui$Element$image,
-						_List_fromArray(
-							[
-								$mdgriffith$elm_ui$Element$height(
-								$mdgriffith$elm_ui$Element$px(
-									$author$project$Brand$scaled(3)))
-							]),
-						{description: 'rizzmi', src: '/web/static/assets/logo.svg'}),
-					url: $author$project$Route$toString($author$project$Route$Home)
-				}),
-				content
-			]));
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$spacing,
+		A3(
+			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
+			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
+			x,
+			x));
 };
-var $mdgriffith$elm_ui$Internal$Model$AlignX = function (a) {
-	return {$: 'AlignX', a: a};
+var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
+	return {$: 'AlignY', a: a};
 };
-var $mdgriffith$elm_ui$Internal$Model$Right = {$: 'Right'};
-var $mdgriffith$elm_ui$Element$alignRight = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$Right);
-var $author$project$User$fullName = function (user) {
-	return user.firstName + (' ' + user.lastName);
-};
-var $author$project$Viewer$info = function (_v0) {
-	var val = _v0.a;
-	return val;
-};
+var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
+var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
 var $mdgriffith$elm_ui$Internal$Flag$borderColor = $mdgriffith$elm_ui$Internal$Flag$flag(28);
 var $mdgriffith$elm_ui$Element$Border$color = function (clr) {
 	return A2(
@@ -18775,26 +18854,15 @@ var $mdgriffith$elm_ui$Internal$Model$Text = function (a) {
 var $mdgriffith$elm_ui$Element$text = function (content) {
 	return $mdgriffith$elm_ui$Internal$Model$Text(content);
 };
-var $author$project$Layout$loginBtn = $author$project$Layout$secondaryBan(
-	$mdgriffith$elm_ui$Element$text('Login'));
-var $author$project$Brand$warningColor = A3($mdgriffith$elm_ui$Element$rgb255, 212, 15, 74);
-var $author$project$Layout$warningBtn = function (content) {
-	return A2(
-		$mdgriffith$elm_ui$Element$el,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$warningColor),
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$primaryTextColorDBg),
-				$mdgriffith$elm_ui$Element$Font$size(
-				$author$project$Brand$scaled(1)),
-				$mdgriffith$elm_ui$Element$Border$rounded(6),
-				A2($mdgriffith$elm_ui$Element$paddingXY, 12, 8),
-				$mdgriffith$elm_ui$Element$pointer
-			]),
-		content);
-};
-var $author$project$Layout$logoutBtn = $author$project$Layout$warningBtn(
-	$mdgriffith$elm_ui$Element$text('Logout'));
+var $author$project$Page$loginBtn = A2(
+	$mdgriffith$elm_ui$Element$link,
+	_List_fromArray(
+		[$mdgriffith$elm_ui$Element$centerY]),
+	{
+		label: $author$project$Layout$secondaryBan(
+			$mdgriffith$elm_ui$Element$text('Login')),
+		url: $author$project$Route$toString($author$project$Route$Login)
+	});
 var $author$project$Brand$primaryColor = A3($mdgriffith$elm_ui$Element$rgb255, 80, 161, 65);
 var $author$project$Layout$primaryBtn = function (content) {
 	return A2(
@@ -18811,82 +18879,193 @@ var $author$project$Layout$primaryBtn = function (content) {
 			]),
 		content);
 };
-var $author$project$Layout$signupBtn = $author$project$Layout$primaryBtn(
-	$mdgriffith$elm_ui$Element$text('Sign up for free'));
-var $mdgriffith$elm_ui$Internal$Model$SpacingStyle = F3(
-	function (a, b, c) {
-		return {$: 'SpacingStyle', a: a, b: b, c: c};
+var $author$project$Page$signupBtn = A2(
+	$mdgriffith$elm_ui$Element$link,
+	_List_fromArray(
+		[$mdgriffith$elm_ui$Element$centerY]),
+	{
+		label: $author$project$Layout$primaryBtn(
+			$mdgriffith$elm_ui$Element$text('Sign up for free')),
+		url: $author$project$Route$toString($author$project$Route$Signup)
 	});
-var $mdgriffith$elm_ui$Internal$Flag$spacing = $mdgriffith$elm_ui$Internal$Flag$flag(3);
-var $mdgriffith$elm_ui$Internal$Model$spacingName = F2(
-	function (x, y) {
-		return 'spacing-' + ($elm$core$String$fromInt(x) + ('-' + $elm$core$String$fromInt(y)));
-	});
-var $mdgriffith$elm_ui$Element$spacing = function (x) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$spacing,
-		A3(
-			$mdgriffith$elm_ui$Internal$Model$SpacingStyle,
-			A2($mdgriffith$elm_ui$Internal$Model$spacingName, x, x),
-			x,
-			x));
-};
-var $author$project$Session$viewer = function (session) {
-	if (session.$ === 'LoggedIn') {
-		var val = session.c;
-		return $elm$core$Maybe$Just(val);
-	} else {
-		return $elm$core$Maybe$Nothing;
+var $author$project$Page$viewEntrance = function (page) {
+	switch (page.$) {
+		case 'Login':
+			return _List_fromArray(
+				[$author$project$Page$signupBtn]);
+		case 'Signup':
+			return _List_fromArray(
+				[$author$project$Page$loginBtn]);
+		case 'Home':
+			return _List_fromArray(
+				[$author$project$Page$signupBtn, $author$project$Page$loginBtn]);
+		default:
+			return _List_Nil;
 	}
 };
-var $author$project$Page$Home$appBarContent = function (session) {
-	return A2(
-		$mdgriffith$elm_ui$Element$row,
-		_List_fromArray(
+var $author$project$Page$avatarBtn = A2(
+	$mdgriffith$elm_ui$Element$link,
+	_List_fromArray(
+		[$mdgriffith$elm_ui$Element$centerY]),
+	{
+		label: A2(
+			$mdgriffith$elm_ui$Element$image,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width(
+					$mdgriffith$elm_ui$Element$px(32)),
+					$mdgriffith$elm_ui$Element$height(
+					$mdgriffith$elm_ui$Element$px(32))
+				]),
+			{description: 'avatar', src: '/web/static/assets/avatar.svg'}),
+		url: $author$project$Route$toString($author$project$Route$MyProfile)
+	});
+var $author$project$Page$logoutBtn = A2(
+	$mdgriffith$elm_ui$Element$link,
+	_List_fromArray(
+		[$mdgriffith$elm_ui$Element$centerY]),
+	{
+		label: $author$project$Layout$secondaryBan(
+			$mdgriffith$elm_ui$Element$text('Logout')),
+		url: $author$project$Route$toString($author$project$Route$Logout)
+	});
+var $author$project$Page$notificationBtn = A2(
+	$mdgriffith$elm_ui$Element$link,
+	_List_fromArray(
+		[$mdgriffith$elm_ui$Element$centerY]),
+	{
+		label: A2(
+			$mdgriffith$elm_ui$Element$image,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width(
+					$mdgriffith$elm_ui$Element$px(24)),
+					$mdgriffith$elm_ui$Element$height(
+					$mdgriffith$elm_ui$Element$px(24))
+				]),
+			{description: 'avatar', src: '/web/static/assets/notifications-24px.svg'}),
+		url: '#'
+	});
+var $author$project$Page$settingBtn = A2(
+	$mdgriffith$elm_ui$Element$link,
+	_List_fromArray(
+		[$mdgriffith$elm_ui$Element$centerY]),
+	{
+		label: A2(
+			$mdgriffith$elm_ui$Element$image,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width(
+					$mdgriffith$elm_ui$Element$px(24)),
+					$mdgriffith$elm_ui$Element$height(
+					$mdgriffith$elm_ui$Element$px(24))
+				]),
+			{description: 'avatar', src: '/web/static/assets/settings_applications-24px.svg'}),
+		url: '#'
+	});
+var $author$project$Page$viewLinks = F2(
+	function (page, viewer) {
+		return _List_fromArray(
 			[
-				$mdgriffith$elm_ui$Element$alignRight,
-				$mdgriffith$elm_ui$Element$spacing(
-				$author$project$Brand$scaled(2))
-			]),
-		function () {
-			var _v0 = $author$project$Session$viewer(session);
-			if (_v0.$ === 'Nothing') {
-				return _List_fromArray(
+				A2(
+				$mdgriffith$elm_ui$Element$row,
+				_List_fromArray(
 					[
-						A2(
-						$mdgriffith$elm_ui$Element$link,
-						_List_Nil,
-						{
-							label: $author$project$Layout$signupBtn,
-							url: $author$project$Route$toString($author$project$Route$Signup)
-						}),
-						A2(
-						$mdgriffith$elm_ui$Element$link,
-						_List_Nil,
-						{
-							label: $author$project$Layout$loginBtn,
-							url: $author$project$Route$toString($author$project$Route$Login)
-						})
-					]);
-			} else {
-				var viewer = _v0.a;
-				var user = $author$project$Viewer$info(viewer);
-				return _List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$text(
-						'Hello ' + ($author$project$User$fullName(user) + '!')),
-						A2(
-						$mdgriffith$elm_ui$Element$link,
-						_List_Nil,
-						{
-							label: $author$project$Layout$logoutBtn,
-							url: $author$project$Route$toString($author$project$Route$Logout)
-						})
-					]);
-			}
-		}());
+						$mdgriffith$elm_ui$Element$spacing(
+						$author$project$Brand$scaled(-1))
+					]),
+				_List_fromArray(
+					[$author$project$Page$notificationBtn, $author$project$Page$settingBtn])),
+				function () {
+				if (page.$ === 'MyProfile') {
+					return $author$project$Page$logoutBtn;
+				} else {
+					return $author$project$Page$avatarBtn;
+				}
+			}()
+			]);
+	});
+var $author$project$Page$appBar = F2(
+	function (maybeViewer, page) {
+		return A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$height(
+					$mdgriffith$elm_ui$Element$px($author$project$Brand$appBarHeight)),
+					$author$project$Brand$defaultBarPadding,
+					$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$secondaryColor),
+					$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$primaryTextColorDBg),
+					$author$project$Brand$shadow
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$link,
+					_List_fromArray(
+						[$mdgriffith$elm_ui$Element$Font$bold]),
+					{
+						label: A2(
+							$mdgriffith$elm_ui$Element$image,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$height(
+									$mdgriffith$elm_ui$Element$px(
+										$author$project$Brand$scaled(3)))
+								]),
+							{description: 'rizzmi', src: '/web/static/assets/logo.svg'}),
+						url: $author$project$Route$toString($author$project$Route$Root)
+					}),
+					A2(
+					$mdgriffith$elm_ui$Element$row,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$alignRight,
+							$mdgriffith$elm_ui$Element$spacing($author$project$Brand$defaultPaddingAmount)
+						]),
+					function () {
+						if (maybeViewer.$ === 'Nothing') {
+							return $author$project$Page$viewEntrance(page);
+						} else {
+							var viewer = maybeViewer.a;
+							return A2($author$project$Page$viewLinks, page, viewer);
+						}
+					}())
+				]));
+	});
+var $author$project$Brand$canvasColor = A3($mdgriffith$elm_ui$Element$rgb255, 114, 203, 204);
+var $mdgriffith$elm_ui$Internal$Model$paddingName = F4(
+	function (top, right, bottom, left) {
+		return 'pad-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left)))))));
+	});
+var $mdgriffith$elm_ui$Element$paddingEach = function (_v0) {
+	var top = _v0.top;
+	var right = _v0.right;
+	var bottom = _v0.bottom;
+	var left = _v0.left;
+	return (_Utils_eq(top, right) && (_Utils_eq(top, bottom) && _Utils_eq(top, left))) ? A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			'p-' + $elm$core$String$fromInt(top),
+			top,
+			top,
+			top,
+			top)) : A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			A4($mdgriffith$elm_ui$Internal$Model$paddingName, top, right, bottom, left),
+			top,
+			right,
+			bottom,
+			left));
 };
+var $author$project$Brand$defaultBodyPadding = $mdgriffith$elm_ui$Element$paddingEach(
+	{bottom: $author$project$Brand$defaultPaddingAmount, left: $author$project$Brand$defaultPaddingAmount, right: $author$project$Brand$defaultPaddingAmount, top: $author$project$Brand$appBarHeight + $author$project$Brand$defaultPaddingAmount});
 var $mdgriffith$elm_ui$Internal$Model$ImportFont = F2(
 	function (a, b) {
 		return {$: 'ImportFont', a: a, b: b};
@@ -19182,195 +19361,28 @@ var $mdgriffith$elm_ui$Element$layoutWith = F3(
 	});
 var $mdgriffith$elm_ui$Element$layout = $mdgriffith$elm_ui$Element$layoutWith(
 	{options: _List_Nil});
-var $mdgriffith$elm_ui$Internal$Model$CenterX = {$: 'CenterX'};
-var $mdgriffith$elm_ui$Element$centerX = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$CenterX);
-var $mdgriffith$elm_ui$Internal$Model$paddingName = F4(
-	function (top, right, bottom, left) {
-		return 'pad-' + ($elm$core$String$fromInt(top) + ('-' + ($elm$core$String$fromInt(right) + ('-' + ($elm$core$String$fromInt(bottom) + ('-' + $elm$core$String$fromInt(left)))))));
-	});
-var $mdgriffith$elm_ui$Element$paddingEach = function (_v0) {
-	var top = _v0.top;
-	var right = _v0.right;
-	var bottom = _v0.bottom;
-	var left = _v0.left;
-	return (_Utils_eq(top, right) && (_Utils_eq(top, bottom) && _Utils_eq(top, left))) ? A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			'p-' + $elm$core$String$fromInt(top),
-			top,
-			top,
-			top,
-			top)) : A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			A4($mdgriffith$elm_ui$Internal$Model$paddingName, top, right, bottom, left),
-			top,
-			right,
-			bottom,
-			left));
-};
-var $author$project$Brand$defaultBodyPadding = $mdgriffith$elm_ui$Element$paddingEach(
-	{bottom: $author$project$Brand$defaultPaddingAmount, left: $author$project$Brand$defaultPaddingAmount, right: $author$project$Brand$defaultPaddingAmount, top: $author$project$Brand$appBarHeight + $author$project$Brand$defaultPaddingAmount});
-var $author$project$Page$Home$viewLight = function (title) {
-	return A2(
-		$mdgriffith$elm_ui$Element$row,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$cardColor),
-				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-				$author$project$Brand$defaultBodyPadding
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$el,
-				_List_fromArray(
-					[$mdgriffith$elm_ui$Element$centerX]),
-				$mdgriffith$elm_ui$Element$text(title))
-			]));
-};
-var $author$project$Page$Home$viewContactUS = F2(
-	function (contactUs, session) {
-		return A2(
-			$mdgriffith$elm_ui$Element$layout,
-			_List_fromArray(
+var $author$project$Page$view = F3(
+	function (maybeViewer, page, _v0) {
+		var title = _v0.title;
+		var body = _v0.body;
+		return {
+			body: _List_fromArray(
 				[
-					$mdgriffith$elm_ui$Element$inFront(
-					$author$project$Layout$appBar(
-						$author$project$Page$Home$appBarContent(session))),
-					$author$project$Brand$defaultFont
+					A2(
+					$mdgriffith$elm_ui$Element$layout,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$inFront(
+							A2($author$project$Page$appBar, maybeViewer, page)),
+							$author$project$Brand$defaultBodyPadding,
+							$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$canvasColor),
+							$author$project$Brand$defaultFont
+						]),
+					body)
 				]),
-			$author$project$Page$Home$viewLight(contactUs));
+			title: 'rizzmi/' + title
+		};
 	});
-var $author$project$Page$Home$viewFeatures = function (features) {
-	return A2(
-		$mdgriffith$elm_ui$Element$layout,
-		_List_fromArray(
-			[$author$project$Brand$defaultFont]),
-		$author$project$Page$Home$viewLight(features));
-};
-var $author$project$Brand$canvasColor = A3($mdgriffith$elm_ui$Element$rgb255, 114, 203, 204);
-var $author$project$Page$Home$viewDark = function (title) {
-	return A2(
-		$mdgriffith$elm_ui$Element$row,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$canvasColor),
-				$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-				$author$project$Brand$defaultBodyPadding
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$el,
-				_List_fromArray(
-					[$mdgriffith$elm_ui$Element$centerX]),
-				$mdgriffith$elm_ui$Element$text(title))
-			]));
-};
-var $author$project$Page$Home$viewMain = function (main) {
-	return A2(
-		$mdgriffith$elm_ui$Element$layout,
-		_List_fromArray(
-			[$author$project$Brand$defaultFont]),
-		$author$project$Page$Home$viewDark(main));
-};
-var $author$project$Page$Home$viewPricing = function (pricing) {
-	return A2(
-		$mdgriffith$elm_ui$Element$layout,
-		_List_fromArray(
-			[$author$project$Brand$defaultFont]),
-		$author$project$Page$Home$viewDark(pricing));
-};
-var $author$project$Page$Home$viewContent = F2(
-	function (session, section) {
-		switch (section.$) {
-			case 'Main':
-				return $author$project$Page$Home$viewMain('Welcome to Our Website');
-			case 'Features':
-				return $author$project$Page$Home$viewFeatures('A Lot of Awesome Stuff');
-			case 'Pricing':
-				return $author$project$Page$Home$viewPricing('Not so Expensive');
-			default:
-				return A2($author$project$Page$Home$viewContactUS, '000-000-0000', session);
-		}
-	});
-var $author$project$Page$Home$view = function (model) {
-	return {
-		body: _Utils_ap(
-			A2(
-				$elm$core$List$map,
-				$author$project$Page$Home$viewContent(model.session),
-				model.tabs.before),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						A2($author$project$Page$Home$viewContent, model.session, model.tabs.current)
-					]),
-				A2(
-					$elm$core$List$map,
-					$author$project$Page$Home$viewContent(model.session),
-					model.tabs.after))),
-		title: $author$project$Page$Home$sectionName(model.tabs.current)
-	};
-};
-var $author$project$Page$Login$appBarContent = A2(
-	$mdgriffith$elm_ui$Element$row,
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$alignRight,
-			$mdgriffith$elm_ui$Element$spacing(
-			$author$project$Brand$scaled(2))
-		]),
-	_List_fromArray(
-		[
-			A2(
-			$mdgriffith$elm_ui$Element$link,
-			_List_Nil,
-			{
-				label: $author$project$Layout$signupBtn,
-				url: $author$project$Route$toString($author$project$Route$Signup)
-			})
-		]));
-var $mdgriffith$elm_ui$Internal$Model$AlignY = function (a) {
-	return {$: 'AlignY', a: a};
-};
-var $mdgriffith$elm_ui$Internal$Model$CenterY = {$: 'CenterY'};
-var $mdgriffith$elm_ui$Element$centerY = $mdgriffith$elm_ui$Internal$Model$AlignY($mdgriffith$elm_ui$Internal$Model$CenterY);
-var $mdgriffith$elm_ui$Element$padding = function (x) {
-	return A2(
-		$mdgriffith$elm_ui$Internal$Model$StyleClass,
-		$mdgriffith$elm_ui$Internal$Flag$padding,
-		A5(
-			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
-			'p-' + $elm$core$String$fromInt(x),
-			x,
-			x,
-			x,
-			x));
-};
-var $author$project$Brand$defaultPadding = $mdgriffith$elm_ui$Element$padding($author$project$Brand$defaultPaddingAmount);
-var $author$project$Layout$card = function (contents) {
-	return A2(
-		$mdgriffith$elm_ui$Element$el,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$cardColor),
-				$author$project$Brand$defaultPadding,
-				$mdgriffith$elm_ui$Element$Border$rounded(
-				$author$project$Brand$scaled(1)),
-				$mdgriffith$elm_ui$Element$centerY,
-				$mdgriffith$elm_ui$Element$centerX,
-				$author$project$Brand$shadow
-			]),
-		contents);
-};
 var $mdgriffith$elm_ui$Internal$Model$AsColumn = {$: 'AsColumn'};
 var $mdgriffith$elm_ui$Internal$Model$asColumn = $mdgriffith$elm_ui$Internal$Model$AsColumn;
 var $mdgriffith$elm_ui$Element$column = F2(
@@ -19391,6 +19403,154 @@ var $mdgriffith$elm_ui$Element$column = F2(
 						attrs))),
 			$mdgriffith$elm_ui$Internal$Model$Unkeyed(children));
 	});
+var $author$project$Page$Home$sectionName = function (sec) {
+	switch (sec.$) {
+		case 'Main':
+			return 'Home';
+		case 'Features':
+			return 'Features';
+		case 'Pricing':
+			return 'Pricing';
+		default:
+			return 'Contact Us';
+	}
+};
+var $mdgriffith$elm_ui$Internal$Model$CenterX = {$: 'CenterX'};
+var $mdgriffith$elm_ui$Element$centerX = $mdgriffith$elm_ui$Internal$Model$AlignX($mdgriffith$elm_ui$Internal$Model$CenterX);
+var $author$project$Page$Home$viewLight = function (title) {
+	return A2(
+		$mdgriffith$elm_ui$Element$row,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$cardColor),
+				$mdgriffith$elm_ui$Element$height(
+				$mdgriffith$elm_ui$Element$px(600)),
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[$mdgriffith$elm_ui$Element$centerX]),
+				$mdgriffith$elm_ui$Element$text(title))
+			]));
+};
+var $author$project$Page$Home$viewContactUS = function (contactUs) {
+	return $author$project$Page$Home$viewLight(contactUs);
+};
+var $author$project$Page$Home$viewFeatures = function (features) {
+	return $author$project$Page$Home$viewLight(features);
+};
+var $author$project$Page$Home$viewDark = function (title) {
+	return A2(
+		$mdgriffith$elm_ui$Element$row,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$canvasColor),
+				$mdgriffith$elm_ui$Element$height(
+				$mdgriffith$elm_ui$Element$px(600)),
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$mdgriffith$elm_ui$Element$el,
+				_List_fromArray(
+					[$mdgriffith$elm_ui$Element$centerX]),
+				$mdgriffith$elm_ui$Element$text(title))
+			]));
+};
+var $author$project$Page$Home$viewMain = function (main) {
+	return $author$project$Page$Home$viewDark(main);
+};
+var $author$project$Page$Home$viewPricing = function (pricing) {
+	return $author$project$Page$Home$viewDark(pricing);
+};
+var $author$project$Page$Home$viewContent = F2(
+	function (session, section) {
+		switch (section.$) {
+			case 'Main':
+				return $author$project$Page$Home$viewMain('Welcome to Our Website');
+			case 'Features':
+				return $author$project$Page$Home$viewFeatures('A Lot of Awesome Stuff');
+			case 'Pricing':
+				return $author$project$Page$Home$viewPricing('Not so Expensive');
+			default:
+				return $author$project$Page$Home$viewContactUS('000-000-0000');
+		}
+	});
+var $author$project$Page$Home$view = function (model) {
+	return {
+		body: A2(
+			$mdgriffith$elm_ui$Element$column,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+				]),
+			_Utils_ap(
+				A2(
+					$elm$core$List$map,
+					$author$project$Page$Home$viewContent(model.session),
+					model.tabs.before),
+				_Utils_ap(
+					_List_fromArray(
+						[
+							A2($author$project$Page$Home$viewContent, model.session, model.tabs.current)
+						]),
+					A2(
+						$elm$core$List$map,
+						$author$project$Page$Home$viewContent(model.session),
+						model.tabs.after)))),
+		title: $author$project$Page$Home$sectionName(model.tabs.current)
+	};
+};
+var $mdgriffith$elm_ui$Element$padding = function (x) {
+	return A2(
+		$mdgriffith$elm_ui$Internal$Model$StyleClass,
+		$mdgriffith$elm_ui$Internal$Flag$padding,
+		A5(
+			$mdgriffith$elm_ui$Internal$Model$PaddingStyle,
+			'p-' + $elm$core$String$fromInt(x),
+			x,
+			x,
+			x,
+			x));
+};
+var $author$project$Brand$defaultPadding = $mdgriffith$elm_ui$Element$padding($author$project$Brand$defaultPaddingAmount);
+var $author$project$Layout$card = F2(
+	function (attr, contents) {
+		return A2(
+			$mdgriffith$elm_ui$Element$el,
+			A2(
+				$elm$core$List$append,
+				_List_fromArray(
+					[
+						$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$cardColor),
+						$author$project$Brand$defaultPadding,
+						$mdgriffith$elm_ui$Element$Border$rounded(
+						$author$project$Brand$scaled(1)),
+						$mdgriffith$elm_ui$Element$centerY,
+						$mdgriffith$elm_ui$Element$centerX,
+						$author$project$Brand$shadow
+					]),
+				attr),
+			contents);
+	});
+var $author$project$Brand$primaryTextColorLBg = A3($mdgriffith$elm_ui$Element$rgb255, 16, 16, 16);
+var $author$project$Layout$headerText = function (header) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$centerX,
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$primaryTextColorLBg),
+				$mdgriffith$elm_ui$Element$Font$bold,
+				$mdgriffith$elm_ui$Element$Font$size(
+				$author$project$Brand$scaled(5))
+			]),
+		$mdgriffith$elm_ui$Element$text(header));
+};
 var $author$project$Page$Login$isFieldError = F2(
 	function (field, problem) {
 		if (problem.$ === 'InvalidEntry') {
@@ -20420,6 +20580,7 @@ var $author$project$Brand$underlined = function (i) {
 	return $mdgriffith$elm_ui$Element$Border$widthEach(
 		{bottom: i, left: 0, right: 0, top: 0});
 };
+var $author$project$Brand$warningColor = A3($mdgriffith$elm_ui$Element$rgb255, 212, 15, 74);
 var $author$project$Layout$textInput = F2(
 	function (fields, ok) {
 		return A2(
@@ -20554,20 +20715,6 @@ var $author$project$Page$Login$viewEmail = F2(
 				ok),
 			$author$project$Page$Login$viewErrors(problems));
 	});
-var $author$project$Brand$primaryTextColorLBg = A3($mdgriffith$elm_ui$Element$rgb255, 16, 16, 16);
-var $author$project$Layout$viewHeader = function (header) {
-	return A2(
-		$mdgriffith$elm_ui$Element$el,
-		_List_fromArray(
-			[
-				$mdgriffith$elm_ui$Element$centerX,
-				$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$primaryTextColorLBg),
-				$mdgriffith$elm_ui$Element$Font$bold,
-				$mdgriffith$elm_ui$Element$Font$size(
-				$author$project$Brand$scaled(5))
-			]),
-		$mdgriffith$elm_ui$Element$text(header));
-};
 var $author$project$Page$Login$SubmitForm = {$: 'SubmitForm'};
 var $mdgriffith$elm_ui$Internal$Model$Button = {$: 'Button'};
 var $elm$html$Html$Attributes$disabled = $elm$html$Html$Attributes$boolProperty('disabled');
@@ -20955,7 +21102,9 @@ var $author$project$Page$Login$viewRememberMe = function (rememberMe) {
 };
 var $author$project$Page$Login$viewForm = F2(
 	function (form, problems) {
-		return $author$project$Layout$card(
+		return A2(
+			$author$project$Layout$card,
+			_List_Nil,
 			A2(
 				$mdgriffith$elm_ui$Element$column,
 				_List_fromArray(
@@ -20968,7 +21117,7 @@ var $author$project$Page$Login$viewForm = F2(
 					]),
 				_List_fromArray(
 					[
-						$author$project$Layout$viewHeader('Login'),
+						$author$project$Layout$headerText('Login'),
 						A2(
 						$mdgriffith$elm_ui$Element$paragraph,
 						_List_fromArray(
@@ -21017,76 +21166,274 @@ var $author$project$Page$Login$viewForm = F2(
 	});
 var $author$project$Page$Login$view = function (model) {
 	return {
-		body: _List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$layout,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$inFront(
-						$author$project$Layout$appBar($author$project$Page$Login$appBarContent)),
-						$author$project$Brand$defaultBodyPadding,
-						$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$canvasColor),
-						$author$project$Brand$defaultFont
-					]),
-				A2($author$project$Page$Login$viewForm, model.form, model.problems))
-			]),
+		body: A2($author$project$Page$Login$viewForm, model.form, model.problems),
 		title: 'Login'
+	};
+};
+var $author$project$Viewer$info = function (_v0) {
+	var val = _v0.a;
+	return val;
+};
+var $mdgriffith$elm_ui$Internal$Model$Min = F2(
+	function (a, b) {
+		return {$: 'Min', a: a, b: b};
+	});
+var $mdgriffith$elm_ui$Element$minimum = F2(
+	function (i, l) {
+		return A2($mdgriffith$elm_ui$Internal$Model$Min, i, l);
+	});
+var $author$project$User$fullName = function (user) {
+	return user.firstName + (' ' + user.lastName);
+};
+var $author$project$Page$MyProfile$SaveChanges = {$: 'SaveChanges'};
+var $author$project$Page$MyProfile$saveBtn = A2(
+	$mdgriffith$elm_ui$Element$Input$button,
+	_List_fromArray(
+		[$mdgriffith$elm_ui$Element$alignRight, $mdgriffith$elm_ui$Element$alignTop]),
+	{
+		label: A2(
+			$mdgriffith$elm_ui$Element$image,
+			_List_Nil,
+			{description: 'save', src: '/web/static/assets/save-24px.svg'}),
+		onPress: $elm$core$Maybe$Just($author$project$Page$MyProfile$SaveChanges)
+	});
+var $author$project$Page$MyProfile$viewAvatar = A2(
+	$mdgriffith$elm_ui$Element$image,
+	_List_fromArray(
+		[
+			$mdgriffith$elm_ui$Element$width(
+			$mdgriffith$elm_ui$Element$px(
+				$author$project$Brand$scaled(11))),
+			$mdgriffith$elm_ui$Element$height(
+			$mdgriffith$elm_ui$Element$px(
+				$author$project$Brand$scaled(11))),
+			$mdgriffith$elm_ui$Element$alignTop
+		]),
+	{description: 'Avatar', src: '/web/static/assets/avatar.svg'});
+var $author$project$Page$MyProfile$viewInfo = F3(
+	function (src, description, val) {
+		return A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$spacing(
+					$author$project$Brand$scaled(0))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$image,
+					_List_fromArray(
+						[$mdgriffith$elm_ui$Element$centerY]),
+					{description: description, src: '/web/static/assets/' + src}),
+					A2(
+					$mdgriffith$elm_ui$Element$el,
+					_List_fromArray(
+						[$mdgriffith$elm_ui$Element$centerY]),
+					$mdgriffith$elm_ui$Element$text(val))
+				]));
+	});
+var $author$project$Page$MyProfile$viewDetails = function (user) {
+	return A2(
+		$mdgriffith$elm_ui$Element$column,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$spacing(
+				$author$project$Brand$scaled(-1)),
+				$mdgriffith$elm_ui$Element$Font$size(
+				$author$project$Brand$scaled(0))
+			]),
+		_List_fromArray(
+			[
+				A3($author$project$Page$MyProfile$viewInfo, 'email-24px.svg', 'email', user.email),
+				A3($author$project$Page$MyProfile$viewInfo, 'call-24px.svg', 'phone number', user.phoneNumber),
+				A3(
+				$author$project$Page$MyProfile$viewInfo,
+				'business-24px.svg',
+				'company',
+				A2($elm$core$Maybe$withDefault, 'N/A', user.company))
+			]));
+};
+var $author$project$Page$MyProfile$viewName = function (name) {
+	return A2(
+		$mdgriffith$elm_ui$Element$el,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$Font$size(
+				$author$project$Brand$scaled(4)),
+				$mdgriffith$elm_ui$Element$Font$bold,
+				$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$secondaryColor)
+			]),
+		$mdgriffith$elm_ui$Element$text(name));
+};
+var $author$project$Page$MyProfile$viewEditForm = function (user) {
+	return A2(
+		$author$project$Layout$card,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+			]),
+		A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$author$project$Brand$defaultPadding,
+					$mdgriffith$elm_ui$Element$spacing($author$project$Brand$defaultPaddingAmount),
+					$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$primaryTextColorLBg),
+					$mdgriffith$elm_ui$Element$alignTop,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+				]),
+			_List_fromArray(
+				[
+					$author$project$Page$MyProfile$viewAvatar,
+					A2(
+					$mdgriffith$elm_ui$Element$column,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$spacing($author$project$Brand$defaultPaddingAmount)
+						]),
+					_List_fromArray(
+						[
+							$author$project$Page$MyProfile$viewName(
+							$author$project$User$fullName(user)),
+							$author$project$Page$MyProfile$viewDetails(user)
+						])),
+					$author$project$Page$MyProfile$saveBtn
+				])));
+};
+var $author$project$Page$MyProfile$EditInfo = {$: 'EditInfo'};
+var $author$project$Page$MyProfile$editBtn = A2(
+	$mdgriffith$elm_ui$Element$Input$button,
+	_List_fromArray(
+		[$mdgriffith$elm_ui$Element$alignRight, $mdgriffith$elm_ui$Element$alignTop]),
+	{
+		label: A2(
+			$mdgriffith$elm_ui$Element$image,
+			_List_Nil,
+			{description: 'edit', src: '/web/static/assets/edit-24px.svg'}),
+		onPress: $elm$core$Maybe$Just($author$project$Page$MyProfile$EditInfo)
+	});
+var $author$project$Page$MyProfile$viewUserInfo = function (user) {
+	return A2(
+		$author$project$Layout$card,
+		_List_fromArray(
+			[
+				$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+			]),
+		A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$author$project$Brand$defaultPadding,
+					$mdgriffith$elm_ui$Element$spacing($author$project$Brand$defaultPaddingAmount),
+					$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$primaryTextColorLBg),
+					$mdgriffith$elm_ui$Element$alignTop,
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill)
+				]),
+			_List_fromArray(
+				[
+					$author$project$Page$MyProfile$viewAvatar,
+					A2(
+					$mdgriffith$elm_ui$Element$column,
+					_List_fromArray(
+						[
+							$mdgriffith$elm_ui$Element$spacing($author$project$Brand$defaultPaddingAmount)
+						]),
+					_List_fromArray(
+						[
+							$author$project$Page$MyProfile$viewName(
+							$author$project$User$fullName(user)),
+							$author$project$Page$MyProfile$viewDetails(user)
+						])),
+					$author$project$Page$MyProfile$editBtn
+				])));
+};
+var $author$project$Session$viewer = function (session) {
+	if (session.$ === 'LoggedIn') {
+		var val = session.c;
+		return $elm$core$Maybe$Just(val);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$Page$MyProfile$view = function (model) {
+	return {
+		body: function () {
+			var _v0 = $author$project$Session$viewer(
+				$author$project$Page$MyProfile$toSession(model));
+			if (_v0.$ === 'Nothing') {
+				return $mdgriffith$elm_ui$Element$none;
+			} else {
+				var viewer = _v0.a;
+				return A2(
+					$mdgriffith$elm_ui$Element$column,
+					_List_fromArray(
+						[
+							A2(
+							$mdgriffith$elm_ui$Element$paddingXY,
+							0,
+							$author$project$Brand$scaled(5)),
+							$mdgriffith$elm_ui$Element$centerX,
+							$mdgriffith$elm_ui$Element$width(
+							A2(
+								$mdgriffith$elm_ui$Element$minimum,
+								$author$project$Brand$scaled(17),
+								A2(
+									$mdgriffith$elm_ui$Element$maximum,
+									$author$project$Brand$scaled(19),
+									$mdgriffith$elm_ui$Element$fill))),
+							$mdgriffith$elm_ui$Element$spacing($author$project$Brand$defaultPaddingAmount)
+						]),
+					_List_fromArray(
+						[
+							function () {
+							if (model.$ === 'ViewMode') {
+								return $author$project$Page$MyProfile$viewUserInfo(
+									$author$project$Viewer$info(viewer));
+							} else {
+								return $author$project$Page$MyProfile$viewEditForm(
+									$author$project$Viewer$info(viewer));
+							}
+						}(),
+							A2(
+							$author$project$Layout$card,
+							_List_fromArray(
+								[
+									$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+									$mdgriffith$elm_ui$Element$height(
+									$mdgriffith$elm_ui$Element$px(200))
+								]),
+							$mdgriffith$elm_ui$Element$none)
+						]));
+			}
+		}(),
+		title: 'profile'
 	};
 };
 var $author$project$Page$NotFound$view = function (model) {
 	return {
-		body: _List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$layout,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$inFront(
-						$author$project$Layout$appBar($mdgriffith$elm_ui$Element$none)),
-						$author$project$Brand$defaultFont
-					]),
-				A2(
-					$mdgriffith$elm_ui$Element$row,
+		body: A2(
+			$mdgriffith$elm_ui$Element$row,
+			_List_fromArray(
+				[
+					$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$canvasColor),
+					$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
+					$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
+					$author$project$Brand$defaultBodyPadding,
+					$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$primaryTextColorLBg),
+					$mdgriffith$elm_ui$Element$Font$bold
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$mdgriffith$elm_ui$Element$el,
 					_List_fromArray(
-						[
-							$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$canvasColor),
-							$mdgriffith$elm_ui$Element$height($mdgriffith$elm_ui$Element$fill),
-							$mdgriffith$elm_ui$Element$width($mdgriffith$elm_ui$Element$fill),
-							$author$project$Brand$defaultBodyPadding,
-							$mdgriffith$elm_ui$Element$Font$color($author$project$Brand$primaryTextColorLBg),
-							$mdgriffith$elm_ui$Element$Font$bold
-						]),
-					_List_fromArray(
-						[
-							A2(
-							$mdgriffith$elm_ui$Element$el,
-							_List_fromArray(
-								[$mdgriffith$elm_ui$Element$centerX]),
-							$mdgriffith$elm_ui$Element$text('404 Page Not Found '))
-						])))
-			]),
-		title: '404 Page Not Found'
+						[$mdgriffith$elm_ui$Element$centerX]),
+					$mdgriffith$elm_ui$Element$text('404 Page Not Found '))
+				])),
+		title: 'Page Not Found'
 	};
 };
-var $author$project$Page$Signup$appBarContent = A2(
-	$mdgriffith$elm_ui$Element$row,
-	_List_fromArray(
-		[
-			$mdgriffith$elm_ui$Element$alignRight,
-			$mdgriffith$elm_ui$Element$spacing(
-			$author$project$Brand$scaled(2))
-		]),
-	_List_fromArray(
-		[
-			A2(
-			$mdgriffith$elm_ui$Element$link,
-			_List_Nil,
-			{
-				label: $author$project$Layout$loginBtn,
-				url: $author$project$Route$toString($author$project$Route$Login)
-			})
-		]));
 var $author$project$Page$Signup$isFieldError = F2(
 	function (field, problem) {
 		if (problem.$ === 'InvalidEntry') {
@@ -21537,7 +21884,9 @@ var $author$project$Page$Signup$viewSignupBtn = A2(
 	});
 var $author$project$Page$Signup$viewForm = F2(
 	function (form, problems) {
-		return $author$project$Layout$card(
+		return A2(
+			$author$project$Layout$card,
+			_List_Nil,
 			A2(
 				$mdgriffith$elm_ui$Element$column,
 				_List_fromArray(
@@ -21547,7 +21896,7 @@ var $author$project$Page$Signup$viewForm = F2(
 					]),
 				_List_fromArray(
 					[
-						$author$project$Layout$viewHeader('Sign up'),
+						$author$project$Layout$headerText('Sign up'),
 						A2(
 						$mdgriffith$elm_ui$Element$paragraph,
 						_List_fromArray(
@@ -21604,20 +21953,7 @@ var $author$project$Page$Signup$viewForm = F2(
 	});
 var $author$project$Page$Signup$view = function (model) {
 	return {
-		body: _List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$layout,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$inFront(
-						$author$project$Layout$appBar($author$project$Page$Signup$appBarContent)),
-						$author$project$Brand$defaultBodyPadding,
-						$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$canvasColor),
-						$author$project$Brand$defaultFont
-					]),
-				A2($author$project$Page$Signup$viewForm, model.form, model.problems))
-			]),
+		body: A2($author$project$Page$Signup$viewForm, model.form, model.problems),
 		title: 'Sign up'
 	};
 };
@@ -21773,7 +22109,9 @@ var $author$project$Page$Welcome$viewPhoneNumber = function (phone) {
 		true);
 };
 var $author$project$Page$Welcome$viewCreateForm = function (form) {
-	return $author$project$Layout$card(
+	return A2(
+		$author$project$Layout$card,
+		_List_Nil,
 		A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
@@ -21800,7 +22138,7 @@ var $author$project$Page$Welcome$viewCreateForm = function (form) {
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$centerX]),
-							$author$project$Layout$viewHeader('Create Company')),
+							$author$project$Layout$headerText('Create Company')),
 							A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -21820,7 +22158,9 @@ var $author$project$Page$Welcome$viewCreateForm = function (form) {
 				])));
 };
 var $author$project$Page$Welcome$viewJoinForm = function (form) {
-	return $author$project$Layout$card(
+	return A2(
+		$author$project$Layout$card,
+		_List_Nil,
 		A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
@@ -21847,7 +22187,7 @@ var $author$project$Page$Welcome$viewJoinForm = function (form) {
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
 								[$mdgriffith$elm_ui$Element$centerX]),
-							$author$project$Layout$viewHeader('Join Company')),
+							$author$project$Layout$headerText('Join Company')),
 							A2(
 							$mdgriffith$elm_ui$Element$el,
 							_List_fromArray(
@@ -21919,7 +22259,9 @@ var $author$project$Page$Welcome$viewJoinBtn = A2(
 		onPress: $elm$core$Maybe$Just($author$project$Page$Welcome$ShowJoinForm)
 	});
 var $author$project$Page$Welcome$viewWelcomeCard = function (session) {
-	return $author$project$Layout$card(
+	return A2(
+		$author$project$Layout$card,
+		_List_Nil,
 		A2(
 			$mdgriffith$elm_ui$Element$column,
 			_List_fromArray(
@@ -21929,13 +22271,12 @@ var $author$project$Page$Welcome$viewWelcomeCard = function (session) {
 				]),
 			_List_fromArray(
 				[
-					$author$project$Layout$viewHeader(
+					$author$project$Layout$headerText(
 					function () {
 						var _v0 = $author$project$Session$viewer(session);
 						if (_v0.$ === 'Just') {
 							var viewer = _v0.a;
-							return 'Welcome ' + ($author$project$User$fullName(
-								$author$project$Viewer$info(viewer)) + '!');
+							return 'Welcome ' + ($author$project$Viewer$info(viewer).firstName + '!');
 						} else {
 							return 'Welcome!';
 						}
@@ -21953,114 +22294,83 @@ var $author$project$Page$Welcome$viewWelcomeCard = function (session) {
 };
 var $author$project$Page$Welcome$view = function (model) {
 	return {
-		body: _List_fromArray(
-			[
-				A2(
-				$mdgriffith$elm_ui$Element$layout,
-				_List_fromArray(
-					[
-						$mdgriffith$elm_ui$Element$inFront(
-						$author$project$Layout$appBar($mdgriffith$elm_ui$Element$none)),
-						$author$project$Brand$defaultBodyPadding,
-						$mdgriffith$elm_ui$Element$Background$color($author$project$Brand$canvasColor),
-						$author$project$Brand$defaultFont
-					]),
-				function () {
-					switch (model.$) {
-						case 'Welcome':
-							var session = model.a;
-							return $author$project$Page$Welcome$viewWelcomeCard(session);
-						case 'CreateCompany':
-							var session = model.a;
-							var form = model.b;
-							return $author$project$Page$Welcome$viewCreateForm(form);
-						default:
-							var session = model.a;
-							var form = model.b;
-							return $author$project$Page$Welcome$viewJoinForm(form);
-					}
-				}())
-			]),
+		body: function () {
+			switch (model.$) {
+				case 'Welcome':
+					var session = model.a;
+					return $author$project$Page$Welcome$viewWelcomeCard(session);
+				case 'CreateCompany':
+					var session = model.a;
+					var form = model.b;
+					return $author$project$Page$Welcome$viewCreateForm(form);
+				default:
+					var session = model.a;
+					var form = model.b;
+					return $author$project$Page$Welcome$viewJoinForm(form);
+			}
+		}(),
 		title: 'Welcome'
 	};
 };
 var $author$project$Main$view = function (model) {
-	switch (model.$) {
-		case 'Home':
-			var home = model.a;
-			var _v1 = $author$project$Page$Home$view(home);
+	var viewer = $author$project$Session$viewer(
+		$author$project$Main$toSession(model));
+	var viewPage = F3(
+		function (toMsg, page, content) {
+			var _v1 = A3($author$project$Page$view, viewer, page, content);
 			var title = _v1.title;
 			var body = _v1.body;
 			return {
 				body: A2(
 					$elm$core$List$map,
-					$elm$html$Html$map(
-						function (msg) {
-							return $author$project$Main$GotHomeMsg(msg);
-						}),
+					$elm$html$Html$map(toMsg),
 					body),
-				title: title + ' - rizzmi'
+				title: title
 			};
+		});
+	switch (model.$) {
+		case 'Home':
+			var home = model.a;
+			return A3(
+				viewPage,
+				$author$project$Main$GotHomeMsg,
+				$author$project$Page$Home,
+				$author$project$Page$Home$view(home));
 		case 'Login':
 			var login = model.a;
-			var _v2 = $author$project$Page$Login$view(login);
-			var title = _v2.title;
-			var body = _v2.body;
-			return {
-				body: A2(
-					$elm$core$List$map,
-					$elm$html$Html$map(
-						function (msg) {
-							return $author$project$Main$GotLoginMsg(msg);
-						}),
-					body),
-				title: title + ' - rizzmi'
-			};
+			return A3(
+				viewPage,
+				$author$project$Main$GotLoginMsg,
+				$author$project$Page$Login,
+				$author$project$Page$Login$view(login));
 		case 'Signup':
 			var signup = model.a;
-			var _v3 = $author$project$Page$Signup$view(signup);
-			var title = _v3.title;
-			var body = _v3.body;
-			return {
-				body: A2(
-					$elm$core$List$map,
-					$elm$html$Html$map(
-						function (msg) {
-							return $author$project$Main$GotSignupMsg(msg);
-						}),
-					body),
-				title: title + ' - rizzmi'
-			};
+			return A3(
+				viewPage,
+				$author$project$Main$GotSignupMsg,
+				$author$project$Page$Signup,
+				$author$project$Page$Signup$view(signup));
 		case 'Welcome':
 			var welcome = model.a;
-			var _v4 = $author$project$Page$Welcome$view(welcome);
-			var title = _v4.title;
-			var body = _v4.body;
-			return {
-				body: A2(
-					$elm$core$List$map,
-					$elm$html$Html$map(
-						function (msg) {
-							return $author$project$Main$GotWelcomeMsg(msg);
-						}),
-					body),
-				title: title + ' - rizzmi'
-			};
+			return A3(
+				viewPage,
+				$author$project$Main$GotWelcomeMsg,
+				$author$project$Page$Welcome,
+				$author$project$Page$Welcome$view(welcome));
+		case 'MyProfile':
+			var profile = model.a;
+			return A3(
+				viewPage,
+				$author$project$Main$GotMyProfileMsg,
+				$author$project$Page$MyProfile,
+				$author$project$Page$MyProfile$view(profile));
 		case 'NotFound':
 			var notFound = model.a;
-			var _v5 = $author$project$Page$NotFound$view(notFound);
-			var title = _v5.title;
-			var body = _v5.body;
-			return {
-				body: A2(
-					$elm$core$List$map,
-					$elm$html$Html$map(
-						function (_v6) {
-							return $author$project$Main$DoNothing;
-						}),
-					body),
-				title: title + ' - rizzmi'
-			};
+			return A3(
+				viewPage,
+				$author$project$Main$GotNotFoundMsg,
+				$author$project$Page$NotFound,
+				$author$project$Page$NotFound$view(notFound));
 		case 'NotImplemented':
 			return {
 				body: _List_fromArray(
@@ -22104,7 +22414,7 @@ var $author$project$Main$view = function (model) {
 								$elm$html$Html$text('Loading...')
 							]))
 					]),
-				title: 'Loading'
+				title: 'rizzmi/Loading'
 			};
 	}
 };
@@ -22112,4 +22422,4 @@ var $author$project$Main$main = A2(
 	$author$project$Api$application,
 	$author$project$Viewer$decoder,
 	{init: $author$project$Main$init, onUrlChange: $author$project$Main$UrlChanged, onUrlRequest: $author$project$Main$LinkClicked, subscriptions: $author$project$Main$subscriptions, update: $author$project$Main$update, view: $author$project$Main$view});
-_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Graphql.Http.Error":{"args":["parsedData"],"type":"Graphql.Http.RawError parsedData Graphql.Http.HttpError"},"Meta.Meta":{"args":[],"type":"{ language : Meta.Language, theme : Meta.Theme, timeZone : Time.Zone }"},"Time.Era":{"args":[],"type":"{ start : Basics.Int, offset : Basics.Int }"},"Graphql.Http.GraphqlError.GraphqlError":{"args":[],"type":"{ message : String.String, locations : Maybe.Maybe (List.List Graphql.Http.GraphqlError.Location), details : Dict.Dict String.String Json.Decode.Value }"},"Graphql.Http.GraphqlError.Location":{"args":[],"type":"{ line : Basics.Int, column : Basics.Int }"},"Http.Metadata":{"args":[],"type":"{ url : String.String, statusCode : Basics.Int, statusText : String.String, headers : Dict.Dict String.String String.String }"},"User.User":{"args":[],"type":"{ id : String.String, firstName : String.String, lastName : String.String, email : String.String, phoneNumber : String.String, company : Maybe.Maybe String.String }"},"Json.Decode.Value":{"args":[],"type":"Json.Encode.Value"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotHomeMsg":["Page.Home.Msg"],"GotLoginMsg":["Page.Login.Msg"],"GotSignupMsg":["Page.Signup.Msg"],"GotWelcomeMsg":["Page.Welcome.Msg"],"GotNotFoundMsg":["Page.NotFound.Msg"],"GotSession":["Session.Session"],"DoNothing":[]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.Home.Msg":{"args":[],"tags":{"ChangeFocus":["Page.Home.Section"],"ChangeLanguage":["Meta.Language"],"ChangeTheme":["Meta.Theme"],"GotSession":["Session.Session"]}},"Page.Login.Msg":{"args":[],"tags":{"ChangeEmail":["String.String"],"ChangePassword":["String.String"],"ToggleShowPassword":["Basics.Bool"],"ToggleRememberMe":["Basics.Bool"],"SubmitForm":[],"GotResponse":["RemoteData.RemoteData (Graphql.Http.Error Viewer.Viewer) Viewer.Viewer"],"GotSession":["Session.Session"]}},"Page.NotFound.Msg":{"args":[],"tags":{"GotSession":["Session.Session"]}},"Page.Signup.Msg":{"args":[],"tags":{"ChangeFirstName":["String.String"],"ChangeLastName":["String.String"],"ChangeEmail":["String.String"],"ChangePhoneNumber":["String.String"],"ChangePassword":["String.String"],"ToggleShowPassword":["Basics.Bool"],"ToggleAgree":["Basics.Bool"],"SubmitForm":[],"GotResponse":["RemoteData.RemoteData (Graphql.Http.Error Viewer.Viewer) Viewer.Viewer"],"GotSession":["Session.Session"]}},"Page.Welcome.Msg":{"args":[],"tags":{"ShowWelcome":[],"ShowCreateForm":[],"ShowJoinForm":[],"SubmitCreateForm":[],"SubmitJoinForm":[],"ChangeName":["String.String"],"ChangeEmail":["String.String"],"ChangePhoneNumber":["String.String"],"SearchForCompany":["String.String"],"GotSession":["Session.Session"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Session.Session":{"args":[],"tags":{"Guest":["Meta.Meta","Browser.Navigation.Key"],"LoggedIn":["Meta.Meta","Browser.Navigation.Key","Viewer.Viewer"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Graphql.Http.HttpError":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Http.Metadata","String.String"],"BadPayload":["Json.Decode.Error"]}},"Browser.Navigation.Key":{"args":[],"tags":{"Key":[]}},"Meta.Language":{"args":[],"tags":{"English":[],"Arabic":[]}},"Graphql.Http.RawError":{"args":["parsedData","httpError"],"tags":{"GraphqlError":["Graphql.Http.GraphqlError.PossiblyParsedData parsedData","List.List Graphql.Http.GraphqlError.GraphqlError"],"HttpError":["httpError"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Page.Home.Section":{"args":[],"tags":{"Main":[],"Features":[],"Pricing":[],"ContactUs":[]}},"Meta.Theme":{"args":[],"tags":{"Default":[],"Dark":[],"Light":[],"Custom":[]}},"Viewer.Viewer":{"args":[],"tags":{"Viewer":["User.User","Api.Cred"]}},"Time.Zone":{"args":[],"tags":{"Zone":["Basics.Int","List.List Time.Era"]}},"Api.Cred":{"args":[],"tags":{"Cred":["Api.AccessToken","Api.RefreshToken"]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":[]}},"Json.Decode.Error":{"args":[],"tags":{"Field":["String.String","Json.Decode.Error"],"Index":["Basics.Int","Json.Decode.Error"],"OneOf":["List.List Json.Decode.Error"],"Failure":["String.String","Json.Decode.Value"]}},"List.List":{"args":["a"],"tags":{}},"Graphql.Http.GraphqlError.PossiblyParsedData":{"args":["parsed"],"tags":{"ParsedData":["parsed"],"UnparsedData":["Json.Decode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Api.AccessToken":{"args":[],"tags":{"AccessToken":["String.String"]}},"Dict.NColor":{"args":[],"tags":{"Red":[],"Black":[]}},"Api.RefreshToken":{"args":[],"tags":{"RefreshToken":["String.String"]}}}}})}});}(this));
+_Platform_export({'Main':{'init':$author$project$Main$main($elm$json$Json$Decode$value)({"versions":{"elm":"0.19.1"},"types":{"message":"Main.Msg","aliases":{"Url.Url":{"args":[],"type":"{ protocol : Url.Protocol, host : String.String, port_ : Maybe.Maybe Basics.Int, path : String.String, query : Maybe.Maybe String.String, fragment : Maybe.Maybe String.String }"},"Graphql.Http.Error":{"args":["parsedData"],"type":"Graphql.Http.RawError parsedData Graphql.Http.HttpError"},"Meta.Meta":{"args":[],"type":"{ language : Meta.Language, theme : Meta.Theme, timeZone : Time.Zone }"},"Time.Era":{"args":[],"type":"{ start : Basics.Int, offset : Basics.Int }"},"Graphql.Http.GraphqlError.GraphqlError":{"args":[],"type":"{ message : String.String, locations : Maybe.Maybe (List.List Graphql.Http.GraphqlError.Location), details : Dict.Dict String.String Json.Decode.Value }"},"Graphql.Http.GraphqlError.Location":{"args":[],"type":"{ line : Basics.Int, column : Basics.Int }"},"Http.Metadata":{"args":[],"type":"{ url : String.String, statusCode : Basics.Int, statusText : String.String, headers : Dict.Dict String.String String.String }"},"User.User":{"args":[],"type":"{ id : String.String, firstName : String.String, lastName : String.String, email : String.String, phoneNumber : String.String, company : Maybe.Maybe String.String }"},"Json.Decode.Value":{"args":[],"type":"Json.Encode.Value"}},"unions":{"Main.Msg":{"args":[],"tags":{"LinkClicked":["Browser.UrlRequest"],"UrlChanged":["Url.Url"],"GotHomeMsg":["Page.Home.Msg"],"GotLoginMsg":["Page.Login.Msg"],"GotSignupMsg":["Page.Signup.Msg"],"GotWelcomeMsg":["Page.Welcome.Msg"],"GotMyProfileMsg":["Page.MyProfile.Msg"],"GotNotFoundMsg":["Page.NotFound.Msg"],"GotSession":["Session.Session"],"DoNothing":[]}},"Basics.Int":{"args":[],"tags":{"Int":[]}},"Maybe.Maybe":{"args":["a"],"tags":{"Just":["a"],"Nothing":[]}},"Page.Home.Msg":{"args":[],"tags":{"ChangeFocus":["Page.Home.Section"],"ChangeLanguage":["Meta.Language"],"ChangeTheme":["Meta.Theme"],"GotSession":["Session.Session"]}},"Page.Login.Msg":{"args":[],"tags":{"ChangeEmail":["String.String"],"ChangePassword":["String.String"],"ToggleShowPassword":["Basics.Bool"],"ToggleRememberMe":["Basics.Bool"],"SubmitForm":[],"GotResponse":["RemoteData.RemoteData (Graphql.Http.Error Viewer.Viewer) Viewer.Viewer"],"GotSession":["Session.Session"]}},"Page.MyProfile.Msg":{"args":[],"tags":{"EditInfo":[],"SaveChanges":[],"GotSession":["Session.Session"]}},"Page.NotFound.Msg":{"args":[],"tags":{"GotSession":["Session.Session"]}},"Page.Signup.Msg":{"args":[],"tags":{"ChangeFirstName":["String.String"],"ChangeLastName":["String.String"],"ChangeEmail":["String.String"],"ChangePhoneNumber":["String.String"],"ChangePassword":["String.String"],"ToggleShowPassword":["Basics.Bool"],"ToggleAgree":["Basics.Bool"],"SubmitForm":[],"GotResponse":["RemoteData.RemoteData (Graphql.Http.Error Viewer.Viewer) Viewer.Viewer"],"GotSession":["Session.Session"]}},"Page.Welcome.Msg":{"args":[],"tags":{"ShowWelcome":[],"ShowCreateForm":[],"ShowJoinForm":[],"SubmitCreateForm":[],"SubmitJoinForm":[],"ChangeName":["String.String"],"ChangeEmail":["String.String"],"ChangePhoneNumber":["String.String"],"SearchForCompany":["String.String"],"GotSession":["Session.Session"]}},"Url.Protocol":{"args":[],"tags":{"Http":[],"Https":[]}},"Session.Session":{"args":[],"tags":{"Guest":["Meta.Meta","Browser.Navigation.Key"],"LoggedIn":["Meta.Meta","Browser.Navigation.Key","Viewer.Viewer"]}},"String.String":{"args":[],"tags":{"String":[]}},"Browser.UrlRequest":{"args":[],"tags":{"Internal":["Url.Url"],"External":["String.String"]}},"Basics.Bool":{"args":[],"tags":{"True":[],"False":[]}},"Graphql.Http.HttpError":{"args":[],"tags":{"BadUrl":["String.String"],"Timeout":[],"NetworkError":[],"BadStatus":["Http.Metadata","String.String"],"BadPayload":["Json.Decode.Error"]}},"Browser.Navigation.Key":{"args":[],"tags":{"Key":[]}},"Meta.Language":{"args":[],"tags":{"English":[],"Arabic":[]}},"Graphql.Http.RawError":{"args":["parsedData","httpError"],"tags":{"GraphqlError":["Graphql.Http.GraphqlError.PossiblyParsedData parsedData","List.List Graphql.Http.GraphqlError.GraphqlError"],"HttpError":["httpError"]}},"RemoteData.RemoteData":{"args":["e","a"],"tags":{"NotAsked":[],"Loading":[],"Failure":["e"],"Success":["a"]}},"Page.Home.Section":{"args":[],"tags":{"Main":[],"Features":[],"Pricing":[],"ContactUs":[]}},"Meta.Theme":{"args":[],"tags":{"Default":[],"Dark":[],"Light":[],"Custom":[]}},"Viewer.Viewer":{"args":[],"tags":{"Viewer":["User.User","Api.Cred"]}},"Time.Zone":{"args":[],"tags":{"Zone":["Basics.Int","List.List Time.Era"]}},"Api.Cred":{"args":[],"tags":{"Cred":["Api.AccessToken","Api.RefreshToken"]}},"Dict.Dict":{"args":["k","v"],"tags":{"RBNode_elm_builtin":["Dict.NColor","k","v","Dict.Dict k v","Dict.Dict k v"],"RBEmpty_elm_builtin":[]}},"Json.Decode.Error":{"args":[],"tags":{"Field":["String.String","Json.Decode.Error"],"Index":["Basics.Int","Json.Decode.Error"],"OneOf":["List.List Json.Decode.Error"],"Failure":["String.String","Json.Decode.Value"]}},"List.List":{"args":["a"],"tags":{}},"Graphql.Http.GraphqlError.PossiblyParsedData":{"args":["parsed"],"tags":{"ParsedData":["parsed"],"UnparsedData":["Json.Decode.Value"]}},"Json.Encode.Value":{"args":[],"tags":{"Value":[]}},"Api.AccessToken":{"args":[],"tags":{"AccessToken":["String.String"]}},"Dict.NColor":{"args":[],"tags":{"Red":[],"Black":[]}},"Api.RefreshToken":{"args":[],"tags":{"RefreshToken":["String.String"]}}}}})}});}(this));
